@@ -12,12 +12,12 @@ export default () => ({
 
   jwt: {
     secret: process.env.JWT_SECRET_KEY,
-    expiresIn: process.env.JWT_EXPIRE_TIME, // example: '1d'
+    expiresIn: process.env.JWT_EXPIRE_TIME,
   },
 
   refreshToken: {
     secret: process.env.JWT_REFRESH_SECRET_KEY,
-    expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME, // example: '7d'
+    expiresIn: process.env.JWT_REFRESH_EXPIRE_TIME, 
   },
 
 //   mail: {

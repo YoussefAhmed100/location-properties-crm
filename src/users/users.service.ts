@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { BaseCrudService } from 'src/common/Factory/base-crud.service';
 import { User, UserDocument } from './schema/users.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiFeatures } from 'src/common/utils/api-features';
@@ -61,31 +60,26 @@ export class UsersService  {
   }
 
   //  Find All (only active users)
-  async findAll(query: UsersQueryDto): Promise<{
-    results: number;
-    pagination: any;
-    data: UserResponseDto[];
-  }> {
-    const total = await this.userModel.countDocuments({});
 
-    const features = new ApiFeatures(
-      this.userModel.find(),
-      query,
-    )
-      .filter()
-      .search(['email', 'fullName'])
-      .sort()
-      .limitFields()
-      .paginate(total);
+async findAll(query: UsersQueryDto) {
+  const features = new ApiFeatures(
+    this.userModel.find({ active: true }),
+    query,
+  )
+    .filter()
+    .search(['email', 'fullName']);
 
-    const data = await features.exec();
+  const total = await features.count();
 
-     return {
-      results: data.length,
-      pagination: features.paginationResult,
-      data: data.map((user) => UserResponseDto.fromEntity(user)),
-    };
-  }
+  features.sort().limitFields().paginate(total);
 
+  const data = await features.exec();
+
+  return {
+    results: data.length,
+    pagination: features.paginationResult,
+    data: data.map((user) => UserResponseDto.fromEntity(user)),
+  };
+}
 
   }

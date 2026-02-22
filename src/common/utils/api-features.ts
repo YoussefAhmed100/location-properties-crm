@@ -1,15 +1,12 @@
 import { Document, Query } from 'mongoose';
+import { IPaginationResult } from '../contracts/pagination.interfaces';
+import { IQueryBuilder } from '../contracts/query-builder.interface';
 
-export interface PaginationResult {
-  currentPage: number;
-  limit: number;
-  numberOfPages: number;
-}
 
-export class ApiFeatures<T extends Document> {
+export class ApiFeatures<T extends Document> implements IQueryBuilder<T> {
   private mongooseQuery: Query<T[], T>;
   private queryString: Record<string, any>;
-  public paginationResult?: PaginationResult;
+  public paginationResult?: IPaginationResult;
 
   constructor(
     mongooseQuery: Query<T[], T>,
@@ -68,7 +65,7 @@ export class ApiFeatures<T extends Document> {
 
   paginate(totalDocuments: number): this {
     const page = parseInt(this.queryString.page) || 1;
-    const limit = parseInt(this.queryString.limit) || 50;
+    const limit = parseInt(this.queryString.limit) || 10;
     const skip = (page - 1) * limit;
 
     this.mongooseQuery = this.mongooseQuery.skip(skip).limit(limit);
@@ -81,6 +78,10 @@ export class ApiFeatures<T extends Document> {
 
     return this;
   }
+  async count(): Promise<number> {
+  const clonedQuery = this.mongooseQuery.model.find(this.mongooseQuery.getQuery());
+  return clonedQuery.countDocuments();
+}
 
   async exec(): Promise<T[]> {
     return this.mongooseQuery.exec();
