@@ -5,7 +5,7 @@ import { Developer } from './schema/developer.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ApiFeatures } from 'src/common/utils/api-features';
-import { buildQueryDto } from 'src/common/dto/base-query.dto';
+import { BuildQueryDto } from 'src/common/dto/base-query.dto';
 
 @Injectable()
 export class DevelopersService {
@@ -24,7 +24,7 @@ export class DevelopersService {
     return this.developerModel.create(createDeveloperDto);
   }
 //  @desc fined all developers
-async findAll(query:buildQueryDto) {
+async findAll(query:BuildQueryDto) {
   const features = new ApiFeatures(
     this.developerModel.find(),
     query,
@@ -45,8 +45,8 @@ async findAll(query:buildQueryDto) {
   };
 }
 
-  findOne(id: string) {
-    const developer = this.developerModel.findById( {_id: id,});
+  async findOne(id: string) {
+    const developer = await this.developerModel.findById({_id: id,});
     if (!developer) {
       throw new BadRequestException('Developer not found');
     }
@@ -54,24 +54,31 @@ async findAll(query:buildQueryDto) {
   }
 
   async update(id: string, updateDeveloperDto: UpdateDeveloperDto) {
-     const developer = this.developerModel.findById({_id: id,});
+     const developer = await this.developerModel.findById({_id: id,});
     if (!developer) {
       throw new BadRequestException('Developer not found');
 
     }
-    const email= await this.developerModel.findOne({ email: updateDeveloperDto.email });
-    if (email) {
-      throw new ConflictException('Developer with this email already exists');
-    }
+  if (updateDeveloperDto.email) {
+  const emailExists = await this.developerModel.findOne({
+    email: updateDeveloperDto.email,
+    _id: { $ne: id },
+  });
+
+  if (emailExists) {
+    throw new ConflictException('Developer with this email already exists');
+  }
+}
     return this.developerModel.findByIdAndUpdate(id, updateDeveloperDto, { new: true });
 
   }
 
-  remove(id:string) {
-    const developer = this.developerModel.findById({_id: id,});
+  async delete(id:string): Promise<string> {
+    const developer =await this.developerModel.findById({_id: id,});
     if (!developer) {
       throw new BadRequestException('Developer not found');
     }
-    return this.developerModel.findByIdAndDelete(id);
+    await this.developerModel.findByIdAndDelete(id);
+    return 'Developer deleted successfully';
   }
 }
