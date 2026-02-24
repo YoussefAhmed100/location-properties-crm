@@ -8,17 +8,33 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
-    return this.projectsService.create(createProjectDto);
+  @UseInterceptors(FilesInterceptor('images', MAX_FILES))
+  create(
+    @Body() dto: CreateProjectDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    
+  ) {
+    return this.projectsService.create(dto, files);
   }
 
   @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  findAll(@Query() query: buildQueryDto) {
+    return this.projectsService.findAll(query);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    return this.projectsService.findOne(id);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images', MAX_FILES))
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateProjectDto,
+    @UploadedFiles() files?: Express.Multer.File[],
+  ) {
+    return this.projectsService.update(id, dto, files);
     return this.projectsService.findOne(+id);
   }
 
@@ -29,6 +45,6 @@ export class ProjectsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+    return this.projectsService.remove(id);
   }
 }
