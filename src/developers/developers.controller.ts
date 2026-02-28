@@ -14,9 +14,14 @@ import { UpdateDeveloperDto } from './dto/update-developer.dto';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+
 
 @ApiTags('Developers')
 @Controller('developers')
+ @UseGuards(JwtAuthGuard, RolesGuard)
+ @Roles('admin')
 export class DevelopersController {
   constructor(private readonly developersService: DevelopersService) {}
 
