@@ -8,10 +8,10 @@ export type UnitDocument = Unit & Document;
 
 @Schema({ timestamps: true })
 export class Unit {
-  @Prop({ type: Types.ObjectId, ref: 'Project', required: true,index:true})
+  @Prop({ type: Types.ObjectId, ref: 'Project', required: true, index: true })
   project: Types.ObjectId;
 
-  @Prop({ required: true, trim: true ,unique:true}) 
+  @Prop({ required: true, trim: true, unique: true })
   unitCode: string;
 
   @Prop({
@@ -60,11 +60,10 @@ export class Unit {
   })
   status: UnitStatus;
 
-
- @Prop({ required: true, min: 0 })
+  @Prop({ required: true, min: 0 })
   size: number;
- @Prop({ type: [String], required: true })
- images: string[]; 
+  @Prop({ type: [String], required: true })
+  images: string[];
 }
 
 export const UnitSchema = SchemaFactory.createForClass(Unit);
@@ -73,5 +72,3 @@ export const UnitSchema = SchemaFactory.createForClass(Unit);
  * Compound Unique Index
  * Prevent duplicate unitCode inside same project
  */
-
-

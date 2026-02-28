@@ -12,3 +12,5 @@ export interface IStorageProvider {
 
   getSignedUrl?(publicId: string): Promise<string>;
 }
+// The IStorageProvider interface defines the contract for any storage provider implementation. It includes methods for uploading files, deleting files, and generating signed URLs. By adhering to this interface,
+//  different storage providers can be integrated into the application without requiring changes to the core logic of the application.
