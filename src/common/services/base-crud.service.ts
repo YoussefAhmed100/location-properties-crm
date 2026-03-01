@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Model, Document, UpdateQuery } from 'mongoose';
 import { ApiFeatures } from '../utils/api-features';
-import { BuildQueryDto } from '../dto/base-query.dto';
+import { buildQueryDto } from '../dto/base-query.dto';
 
 export class BaseCrudService<T extends Document> {
   constructor(protected readonly model: Model<T>) {}
@@ -16,7 +16,7 @@ export class BaseCrudService<T extends Document> {
     return document;
   }
 
-  async findAll(query: BuildQueryDto) {
+  async findAll(query: buildQueryDto) {
     const features = new ApiFeatures(this.model.find(), query)
       .filter()
       .search();

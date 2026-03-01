@@ -1,6 +1,6 @@
 import { IsOptional, IsString, IsNumberString, IsIn } from 'class-validator';
 
-export class BuildQueryDto{
+export class buildQueryDto{
   @IsOptional()
   @IsString()
   keyword?: string;

@@ -36,7 +36,7 @@ export class DevelopersService {
     return this.developerModel.create(createDeveloperDto);
   }
 //  @desc fined all developers
-async findAll(query:BuildQueryDto) {
+async findAll(query: buildQueryDto) {
   const features = new ApiFeatures(
     this.developerModel.find(),
     query,

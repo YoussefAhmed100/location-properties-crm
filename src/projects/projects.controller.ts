@@ -96,13 +96,9 @@ export class ProjectsController {
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
     return this.projectsService.update(id, dto, files);
-    return this.projectsService.findOne(+id);
+   
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
-  }
 
   @ApiOperation({ summary: 'Delete project' })
   @ApiParam({ name: 'id', description: 'Project ID' })

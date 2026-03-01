@@ -11,11 +11,12 @@ import {
 import { DevelopersService } from './developers.service';
 import { CreateDeveloperDto } from './dto/create-developer.dto';
 import { UpdateDeveloperDto } from './dto/update-developer.dto';
-import { BuildQueryDto } from 'src/common/dto/base-query.dto';
+import { buildQueryDto } from 'src/common/dto/base-query.dto';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
 
 @ApiTags('Developers')
@@ -35,7 +36,7 @@ export class DevelopersController {
   @ApiOperation({ summary: 'Get all developers' })
   @ApiOkResponse({ description: 'Return developers list' })
   @Get()
-  findAll(@Query() query: BuildQueryDto) {
+  findAll(@Query() query: buildQueryDto) {
     return this.developersService.findAll(query);
   }
 
@@ -50,7 +51,7 @@ export class DevelopersController {
   @ApiParam({ name: 'id', description: 'Developer ID' })
   @ApiOkResponse({ description: 'Return developer summary' })
   @Get(':id/summary')
-  async getDeveloperSummary(@Param('id') id: string) {
+  async getDeveloperSummary(@Param('id',ParseObjectIdPipe) id: string) {
     return this.developersService.getoneDeveloperDashboardSummary(id);
   }
 
@@ -58,7 +59,7 @@ export class DevelopersController {
   @ApiParam({ name: 'id', description: 'Developer ID' })
   @ApiOkResponse({ description: 'Return developer data' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id',ParseObjectIdPipe) id: string) {
     return this.developersService.findOne(id);
   }
 
@@ -67,7 +68,7 @@ export class DevelopersController {
   @ApiOkResponse({ description: 'Developer updated successfully' })
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id',ParseObjectIdPipe) id: string,
     @Body() updateDeveloperDto: UpdateDeveloperDto,
   ) {
     return this.developersService.update(id, updateDeveloperDto);
@@ -77,7 +78,7 @@ export class DevelopersController {
   @ApiParam({ name: 'id', description: 'Developer ID' })
   @ApiOkResponse({ description: 'Developer deleted successfully' })
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.developersService.delete(id);
+  delete(@Param('id',ParseObjectIdPipe) id: string) {
+    return this.developersService.remove(id);
   }
 }
