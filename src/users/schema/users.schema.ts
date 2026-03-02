@@ -27,7 +27,7 @@ export class User {
   role: UserRole;
 
   @Prop({ default: true })
-  active: boolean;
+  isActive: boolean;
 
   @Prop()
   passwordChangedAt?: Date;

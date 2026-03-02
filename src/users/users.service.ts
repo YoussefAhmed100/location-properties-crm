@@ -69,6 +69,18 @@ return UserResponseDto.fromEntity(user);
     return { message: 'User deactivated successfully' };
   }
 
+  //  Hard Delete
+  async hardDelete(id: string): Promise<{ message: string }> {
+    const user = await this.userModel.findByIdAndDelete(id);
+
+    if (!user)
+      throw new NotFoundException(`No user found with id: ${id}`);
+
+    return { message: 'User deleted successfully' };
+  }
+
+  
+
   //  Find All (only active users)
 
 async findAll(query: buildQueryDto) {

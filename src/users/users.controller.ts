@@ -9,10 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags,
+  
   ApiOperation,
   ApiOkResponse,
-  ApiBearerAuth,
+  
   ApiParam,
 } from '@nestjs/swagger';
 
@@ -23,18 +23,14 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
-@ApiTags('Users')
 @Controller('users')
- @UseGuards(JwtAuthGuard, RolesGuard)
- @Roles('admin')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('super_admin', 'admin')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'Get all users (Admin only)' })
-  @ApiBearerAuth()
-  @ApiOkResponse({ type: [UserResponseDto] })
- 
   @Get()
   async findAll(@Query() query: buildQueryDto) {
     return this.usersService.findAll(query);
@@ -44,7 +40,7 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ type: UserResponseDto })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<UserResponseDto> {
+  async findOne(@Param('id', ParseObjectIdPipe) id: string): Promise<UserResponseDto> {
     return this.usersService.findOne(id);
   }
 
@@ -53,17 +49,27 @@ export class UsersController {
   @ApiOkResponse({ type: UserResponseDto })
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     return this.usersService.updateUser(id, dto);
   }
+// Soft Delete - Admin Only
+  @ApiOperation({ summary: 'Deactivate user' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiOkResponse({ description: 'User deactivated successfully' })
+  @Delete(':id')
+  async softDelete(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.usersService.softDelete(id);
+  }
 
-  @ApiOperation({ summary: 'Soft delete user' })
+  // hard delete - Admin Only
+  @ApiOperation({ summary: 'Delete user permanently' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ description: 'User deleted successfully' })
-  @Delete(':id')
-  async softDelete(@Param('id') id: string) {
-    return this.usersService.softDelete(id);
+  @Delete(':id/delete')
+  async hardDelete(@Param('id',ParseObjectIdPipe) id: string) {
+    return this.usersService.hardDelete(id);
+
   }
 }
