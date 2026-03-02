@@ -9,7 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
         MongooseModule.forFeature([
-      { name: Unit.name, schema: UnitSchema },      // ✅ هنا نسجل الـ UnitModel
+      { name: Unit.name, schema: UnitSchema },      
       { name: Project.name, schema: ProjectSchema },
     ]),
   ],
