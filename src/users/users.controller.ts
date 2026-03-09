@@ -16,6 +16,8 @@ import {
   ApiOkResponse,
   
   ApiParam,
+  ApiBearerAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
@@ -27,7 +29,8 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FilesInterceptor } from '@nestjs/platform-express';
-
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('super_admin', 'admin')

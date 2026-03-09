@@ -15,6 +15,7 @@ import { ClientModule } from './client/client.module';
 import { LeadModule } from './lead/lead.module';
 import { AreasModule } from './areas/areas.module';
 import { EventModule } from './event/event.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 
 @Module({
@@ -46,7 +47,8 @@ import { EventModule } from './event/event.module';
     ClientModule,
     LeadModule,
     AreasModule,
-    EventModule
+    EventModule,
+    DashboardModule
  
   ],
 })

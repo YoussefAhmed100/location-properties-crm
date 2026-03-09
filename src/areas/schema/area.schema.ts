@@ -4,18 +4,14 @@ import { AreaType } from '../enums/area-type.enum';
 
 export type AreaDocument = HydratedDocument<Area>;
 
-
-
 @Schema({
   timestamps: true,
   versionKey: false,
 })
 export class Area {
-
   @Prop({
     required: true,
     trim: true,
-    
   })
   name: string; // B1, B2, B7
 
@@ -23,7 +19,6 @@ export class Area {
     type: Types.ObjectId,
     ref: 'Project',
     required: true,
-    
   })
   project: Types.ObjectId;
 
@@ -32,8 +27,6 @@ export class Area {
     required: true,
   })
   type: AreaType;
-
-
 
   @Prop({
     required: true,
@@ -45,11 +38,8 @@ export class Area {
   })
   description?: string;
 
-@Prop({ required: true, trim: true })
-location: string;
-
-
+  @Prop({ required: true, trim: true })
+  location: string;
 }
 
 export const AreaSchema = SchemaFactory.createForClass(Area);
-

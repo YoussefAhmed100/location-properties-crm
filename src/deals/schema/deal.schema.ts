@@ -56,6 +56,8 @@ export class Deal {
 
   @Prop({ trim: true })
   notes: string;
+  @Prop({default:Date.now})
+  createdAt:Date
 }
 
 export const DealSchema = SchemaFactory.createForClass(Deal);

@@ -101,7 +101,7 @@ async findByIds(
 
     {
       $project: {
-        _id: 1,
+        _id:1,
         name: 1,
         location: 1,
         type: 1,
@@ -112,6 +112,7 @@ async findByIds(
     },
   ]);
 }
+
 
 
 }

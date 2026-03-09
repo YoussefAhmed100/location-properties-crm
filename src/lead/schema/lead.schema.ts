@@ -38,6 +38,8 @@ export class Lead {
 
   @Prop()
   notes: string;
+   @Prop({default:Date.now})
+    createdAt:Date
 }
 
 export const LeadSchema = SchemaFactory.createForClass(Lead);

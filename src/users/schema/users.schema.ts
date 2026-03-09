@@ -41,8 +41,7 @@ export class User {
   @Prop({ default: false })
   passwordResetVerified?: boolean;
 
-  @Prop([{ type: Types.ObjectId, ref: 'Product' }])
-  wishlist: Types.ObjectId[];
+
 
  @Prop({ select: false })
   refreshToken?: string;

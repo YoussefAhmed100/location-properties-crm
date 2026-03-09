@@ -24,12 +24,14 @@ import {
   ApiParam,
   ApiQuery,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiTags('Events')
+@ApiBearerAuth() 
 @Controller('events')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('super_admin', 'admin')
