@@ -16,6 +16,7 @@ import { LeadModule } from './lead/lead.module';
 import { AreasModule } from './areas/areas.module';
 import { EventModule } from './event/event.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { TreasuryModule } from './treasury/treasury.module';
 
 
 @Module({
@@ -48,7 +49,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     LeadModule,
     AreasModule,
     EventModule,
-    DashboardModule
+    DashboardModule,
+    TreasuryModule
  
   ],
 })
