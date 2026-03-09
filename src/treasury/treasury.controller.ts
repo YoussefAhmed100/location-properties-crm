@@ -1,0 +1,70 @@
+import { Controller, Get, Post, Body, UseGuards, Query, Patch, Param, Delete } from '@nestjs/common';
+import { TreasuryService } from './treasury.service';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { buildQueryDto } from 'src/common/dto/base-query.dto';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Transaction } from './schemas/transaction.schema';
+
+@ApiTags('Treasury Transactions')
+@ApiBearerAuth()
+@Controller('treasury/transactions')
+@UseGuards(AuthGuard('jwt'), JwtAuthGuard, RolesGuard)
+@Roles('admin','super_admin')
+export class TreasuryController {
+  constructor(private readonly treasuryService: TreasuryService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new transaction' })
+  @ApiResponse({ status: 201, description: 'Transaction created successfully', type: Transaction })
+  createTransaction(
+    @Body() dto: CreateTransactionDto,
+    @CurrentUser('_id') userId: string,
+  ) {
+    return this.treasuryService.createTransaction(dto, userId);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all transactions with pagination and filter' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  getTransactions(@Query() query: buildQueryDto) {
+    return this.treasuryService.getTransactions(query);
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Get treasury stats (income, expense, net balance)' })
+  getStats() {
+    return this.treasuryService.getStats();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get transaction by ID' })
+  @ApiParam({ name: 'id', description: 'Transaction ID' })
+  getTransactionById(@Param('id', ParseObjectIdPipe) transactionId: string) {
+    return this.treasuryService.getTransactionById(transactionId);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a transaction' })
+  @ApiParam({ name: 'id', description: 'Transaction ID' })
+  updateTransaction(
+    @Param('id', ParseObjectIdPipe) transactionId: string,
+    @Body() dto: UpdateTransactionDto,
+  ) {
+    return this.treasuryService.updateTransaction(transactionId, dto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a transaction' })
+  @ApiParam({ name: 'id', description: 'Transaction ID' })
+  deleteTransaction(@Param('id', ParseObjectIdPipe) transactionId: string) {
+    return this.treasuryService.deleteTransaction(transactionId);
+  }
+}
