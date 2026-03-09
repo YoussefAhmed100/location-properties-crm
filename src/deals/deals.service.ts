@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Deal, DealDocument, DealStatus } from './schema/deal.schema';
 import { Unit, UnitDocument } from '../units/schema/unit.schema';
-import{UnitStatus} from '../units/enums/unit-status.enum';
+import { UnitStatus } from '../units/enums/unit-status.enum';
 
 import { CreateDealDto } from './dto/create-deal.dto';
 import { UpdateDealStatusDto } from './dto/update-deal-status.dto';
@@ -34,12 +34,20 @@ export class DealsService {
       throw new BadRequestException('Unit already sold');
     }
 
-    return this.dealModel.create(createDealDto);
+    const deal = await this.dealModel.create(createDealDto);
+    if (createDealDto.status === 'CLOSED_WON') {
+      unit.status = UnitStatus.SOLD;
+      await unit.save();
+    }
+    return deal;
   }
 
   async findAll(query: buildQueryDto) {
     const features = new ApiFeatures(
-      this.dealModel.find().populate('unit', 'images unitCode type -_id').populate('salesAgent','fullName -_id'),
+      this.dealModel
+        .find()
+        .populate('unit', 'images unitCode type -_id')
+        .populate('salesAgent', 'fullName -_id'),
       query,
     )
       .filter()
@@ -64,7 +72,7 @@ export class DealsService {
       .findById(id)
       .populate('unit', 'images unitCode type -_id')
       .populate('salesAgent', 'fullName -_id');
-      
+
     if (!deal) {
       throw new NotFoundException('Deal not found');
     }
@@ -80,8 +88,6 @@ export class DealsService {
     const unit = await this.unitModel.findById(deal.unit);
 
     if (!unit) throw new NotFoundException('Unit not found');
-
-    
 
     // Business Rules
 
@@ -106,28 +112,27 @@ export class DealsService {
     deal.status = dto.status;
     return deal.save();
   }
- 
+
   // -----------------------
   async update(id: string, updateDealDto: UpdateDealDto) {
-  const deal = await this.dealModel.findById(id);
+    const deal = await this.dealModel.findById(id);
 
-  if (!deal) {
-    throw new NotFoundException('Deal not found');
+    if (!deal) {
+      throw new NotFoundException('Deal not found');
+    }
+
+    if (updateDealDto.status) {
+      throw new BadRequestException(
+        'Use /status endpoint to update deal status',
+      );
+    }
+
+    Object.assign(deal, updateDealDto);
+
+    return deal.save();
   }
 
- 
-  if (updateDealDto.status) {
-    throw new BadRequestException(
-      'Use /status endpoint to update deal status',
-    );
-  }
-
-  Object.assign(deal, updateDealDto);
-
-  return deal.save();
-}
-
-// delete deal and set unit back to available if not closed won
+  // delete deal and set unit back to available if not closed won
   async remove(id: string): Promise<{ message: string }> {
     const deal = await this.dealModel.findById(id);
     if (!deal) {
@@ -142,41 +147,38 @@ export class DealsService {
     }
     await this.dealModel.findByIdAndDelete(id);
     return { message: 'Deal deleted successfully' };
-    }
-
-
-
-
-async getPipelineSummary() {
-  const result = await this.dealModel.aggregate([
-    {
-      $group: {
-        _id: '$status',
-        count: { $sum: 1 },
-        totalValue: { $sum: '$value' },
-      },
-    },
-  ]);
-
-  const statuses = [
-    'NEW',
-    'NEGOTIATION',
-    'RESERVATION',
-    'CLOSED_WON',
-    'CLOSED_LOST',
-  ];
-
-  const summary = {};
-
-  statuses.forEach((status) => {
-    const found = result.find((r) => r._id === status);
-
-    summary[status] = {
-      count: found?.count || 0,
-      totalValue: formatMoneyValue(found?.totalValue || 0),
-    };
-  });
-
-  return summary;
-}
   }
+
+  async getPipelineSummary() {
+    const result = await this.dealModel.aggregate([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+          totalValue: { $sum: '$value' },
+        },
+      },
+    ]);
+
+    const statuses = [
+      'NEW',
+      'NEGOTIATION',
+      'RESERVATION',
+      'CLOSED_WON',
+      'CLOSED_LOST',
+    ];
+
+    const summary = {};
+
+    statuses.forEach((status) => {
+      const found = result.find((r) => r._id === status);
+
+      summary[status] = {
+        count: found?.count || 0,
+        totalValue: formatMoneyValue(found?.totalValue || 0),
+      };
+    });
+
+    return summary;
+  }
+}

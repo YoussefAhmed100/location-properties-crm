@@ -48,8 +48,10 @@ export class AreasService {
 
     const areas = await features.exec();
     const areaIds = areas.map((area) => area._id);
+    
 
     const data = await this.areasAnalyticsService.findByIds(areaIds);
+
 
     return {
       results: data.length,

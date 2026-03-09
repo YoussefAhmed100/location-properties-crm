@@ -36,7 +36,7 @@ export class CreateAreaDto {
 
   @ApiProperty({
     enum: AreaType,
-    example: AreaType.RESIDENTIAL,
+    example: AreaType.VILLA_ZONE,
   })
   @IsEnum(AreaType)
   type: AreaType;

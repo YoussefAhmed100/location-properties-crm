@@ -69,11 +69,10 @@ area: Types.ObjectId;
   size: number;
   @Prop({ type: [String], required: true })
   images: string[];
+   @Prop({default:Date.now})
+    createdAt:Date
 }
 
 export const UnitSchema = SchemaFactory.createForClass(Unit);
 
-/**
- * Compound Unique Index
- * Prevent duplicate unitCode inside same project
- */
+

@@ -20,6 +20,7 @@ import {
   ApiParam,
   ApiOkResponse,
   ApiCreatedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -35,9 +36,10 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 const MAX_FILES = 5;
 
 @ApiTags('Projects')
+@ApiBearerAuth()
 @Controller('projects')
  @UseGuards(JwtAuthGuard, RolesGuard)
- @Roles('admin')
+ @Roles('admin','super_admin')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 

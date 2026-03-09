@@ -5,6 +5,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiParam,
+  ApiBearerAuth,
 
 } from '@nestjs/swagger';
 
@@ -20,9 +21,10 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
 
 @ApiTags('Developers')
+@ApiBearerAuth() 
 @Controller('developers')
  @UseGuards(JwtAuthGuard, RolesGuard)
- @Roles('admin')
+ @Roles('admin','super_admin')
 export class DevelopersController {
   constructor(private readonly developersService: DevelopersService) {}
 

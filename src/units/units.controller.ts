@@ -20,6 +20,7 @@ import {
   ApiParam,
   ApiOkResponse,
   ApiCreatedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { UnitsService } from './units.service';
@@ -34,7 +35,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 
 const MAX_FILES = 5;
  @UseGuards(JwtAuthGuard, RolesGuard)
- @Roles('admin')
+ @Roles('admin','super_admin')
+ @ApiBearerAuth() 
 @ApiTags('Units')
 @Controller('units')
 export class UnitsController {

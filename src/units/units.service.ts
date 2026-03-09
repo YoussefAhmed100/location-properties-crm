@@ -36,7 +36,7 @@ export class UnitsService {
     }
 
     // 1 Upload images
-    const images = files?.length
+    const images = files.length
       ? await this.uploadService.upload(files, [
           'image/jpeg',
           'image/png',
