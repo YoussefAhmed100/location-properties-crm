@@ -133,14 +133,4 @@ export class CreateUnitDto {
   status: UnitStatus;
 
   
-     @ApiProperty({
-      description: 'List of unit images URLs',
-      type: [String],
-      example: ['https://example.com/image1.jpg', 'https://example.com/image2.png'],
-    })
-    @IsArray()
-    @ArrayNotEmpty()
-    @ArrayUnique()
-    @IsString({ each: true })
-    images: string[];
 }
