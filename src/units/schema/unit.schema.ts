@@ -67,8 +67,9 @@ area: Types.ObjectId;
 
   @Prop({ required: true, min: 0 })
   size: number;
-  @Prop({ type: [String], required: true })
+  @Prop({ type: [String],required:true})
   images: string[];
+  
    @Prop({default:Date.now})
     createdAt:Date
 }

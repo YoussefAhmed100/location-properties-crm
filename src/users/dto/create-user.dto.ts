@@ -64,5 +64,6 @@ export class CreateUserDto {
 
 
       
-    
+    @IsOptional()
+    isActive:boolean
 }

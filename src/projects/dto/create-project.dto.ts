@@ -5,12 +5,8 @@ import {
   IsEnum,
   IsDateString,
   IsMongoId,
-  IsNumber,
-  Min,
   IsOptional,
-  ArrayNotEmpty,
-  ArrayUnique,
-  IsArray,
+
 } from 'class-validator';
 
 import { ProjectStatus } from '../schema/project.schema';
@@ -69,14 +65,4 @@ export class CreateProjectDto {
   @IsOptional()
   status: ProjectStatus;
 
-   @ApiProperty({
-    description: 'List of project images URLs',
-    type: [String],
-    example: ['https://example.com/image1.jpg', 'https://example.com/image2.png'],
-  })
-  @IsArray()
-  @ArrayNotEmpty()
-  @ArrayUnique()
-  @IsString({ each: true })
-  images: string[];
 }
