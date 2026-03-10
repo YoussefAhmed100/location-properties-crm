@@ -79,7 +79,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Deactivate user' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ description: 'User deactivated successfully' })
-  @Delete(':id')
+  @Patch(':id/deactive')
   async softDelete(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.softDelete(id);
   }
