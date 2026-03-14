@@ -24,25 +24,31 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    const user = await this.userModel.findById(payload.userId);
+async validate(payload: any) {
+  const user = await this.userModel.findById(payload.sub);
 
-    if (!user) {
-      throw new UnauthorizedException('User no longer exists');
-    }
-
-    if (user.passwordChangedAt) {
-      const changedTimestamp = Math.floor(
-        user.passwordChangedAt.getTime() / 1000,
-      );
-
-      if (changedTimestamp > payload.iat) {
-        throw new UnauthorizedException(
-          'Password changed recently. Please login again.',
-        );
-      }
-    }
-
-    return user;
+  if (!user) {
+    throw new UnauthorizedException('User no longer exists');
   }
+
+  if (!user.isActive) {
+    throw new UnauthorizedException(
+      'Your account is disabled',
+    );
+  }
+
+  if (user.passwordChangedAt) {
+    const changedTimestamp = Math.floor(
+      user.passwordChangedAt.getTime() / 1000,
+    );
+
+    if (changedTimestamp > payload.iat) {
+      throw new UnauthorizedException(
+        'Password changed recently. Please login again.',
+      );
+    }
+  }
+
+  return user;
+}
 }
