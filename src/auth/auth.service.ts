@@ -20,78 +20,60 @@ import { UploadService } from 'src/common/storage/upload.service';
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-      private jwtService: JwtService,
-      private readonly imageService: UploadService,
-
-  
+    private jwtService: JwtService,
+    private readonly imageService: UploadService,
   ) {}
 
-  async register(dto: RegisterDto,files: Express.Multer.File[], ): Promise<UserResponseDto> {
+  async register(
+    dto: RegisterDto,
+    files: Express.Multer.File[],
+  ): Promise<UserResponseDto> {
     // check if email exists
     const existing = await this.userModel.findOne({ email: dto.email });
 
-    if (existing)
-      throw new UnauthorizedException(
-        'Email already in use',
-      );
-      const images = files?.length
-    ? await this.imageService.upload(files)
-    : [];
+    if (existing) throw new UnauthorizedException('Email already in use');
+    const images = files?.length ? await this.imageService.upload(files) : [];
     const user = await this.userModel.create({ ...dto, images });
 
-    const token =  generateToken(user.id, this.jwtService);
+    const token = generateToken(user.id, this.jwtService);
 
-    return UserResponseDto.fromEntity(user, token)
+    return UserResponseDto.fromEntity(user, token);
   }
-//   login
+  //   login
 
-  async login(dto: LoginDto): Promise<UserResponseDto>  {
+  async login(dto: LoginDto): Promise<UserResponseDto> {
     const user = await this.userModel
       .findOne({ email: dto.email })
       .select('+password');
 
-    if (!user)
+    if (!user) throw new UnauthorizedException('Invalid email or password');
+    if (!user.isActive) {
       throw new UnauthorizedException(
-        'Invalid email or password',
+        'Your account has been deactivated. Please contact support.',
       );
+    }
 
-    const isMatch = await bcrypt.compare(
-      dto.password,
-      user.password,
-    );
+    const isMatch = await bcrypt.compare(dto.password, user.password);
 
-    if (!isMatch)
-      throw new UnauthorizedException(
-        'Invalid email or password',
-      );
+    if (!isMatch) throw new UnauthorizedException('Invalid email or password');
 
     const token = generateToken(user.id, this.jwtService);
 
-   return UserResponseDto.fromEntity(user, token);
+    return UserResponseDto.fromEntity(user, token);
   }
 
-//   forgot password
+  //   forgot password
   async forgotPassword(email: string) {
     const user = await this.userModel.findOne({ email });
 
-    if (!user)
-      throw new NotFoundException(
-        `No user found with this email`,
-      );
+    if (!user) throw new NotFoundException(`No user found with this email`);
 
-    const resetCode = Math.floor(
-      100000 + Math.random() * 900000,
-    ).toString();
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const hashed = crypto
-      .createHash('sha256')
-      .update(resetCode)
-      .digest('hex');
+    const hashed = crypto.createHash('sha256').update(resetCode).digest('hex');
 
     user.passwordResetCode = hashed;
-    user.passwordResetExpires = new Date(
-      Date.now() + 10 * 60 * 1000,
-    );
+    user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
     user.passwordResetVerified = false;
 
     await user.save();
@@ -102,15 +84,13 @@ export class AuthService {
   }
 
   // logout
-async logout(userId: string): Promise<{ message: string }> {
-  const user = await this.userModel.findById(userId);
-  if (!user) throw new NotFoundException('User not found');
+  async logout(userId: string): Promise<{ message: string }> {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
 
-  user.refreshToken = undefined;
-  await user.save();
+    user.refreshToken = undefined;
+    await user.save();
 
-  return { message: 'Logged out successfully' };
-}
-
-
+    return { message: 'Logged out successfully' };
+  }
 }

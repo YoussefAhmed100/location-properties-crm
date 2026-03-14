@@ -39,7 +39,7 @@ export class UsersService {
 
     if (existing) throw new UnauthorizedException('Email already in use');
    
-    const images = await this.imageService.upload(files);
+     const images = files?.length ? await this.imageService.upload(files) : [];
     
 
     const user = await this.userModel.create({ ...dto, images });
@@ -110,17 +110,25 @@ export class UsersService {
   }
 
   //  Soft Delete
-  async softDelete(id: string): Promise<{ message: string }> {
-    const user = await this.userModel.findByIdAndUpdate(
-      id,
-      { isActive: false },
-      { new: true },
-    );
-
-    if (!user) throw new NotFoundException(`No user found with id: ${id}`);
-
-    return { message: 'User deactivated successfully' };
+async toggleUserActive(userId: string): Promise<{ message: string; isActive: boolean }> {
+  const user = await this.userModel.findById(userId);
+  if (!user) {
+    throw new NotFoundException('User not found');
   }
+
+  if (user.isActive) {
+    user.isActive = false;
+    user.refreshToken = undefined;
+    await user.save();
+    return { message: 'User deactivated successfully', isActive: user.isActive };
+  }
+
+  user.isActive = true;
+  await user.save();
+  return { message: 'User activated successfully', isActive: user.isActive };
+}
+
+
 
   //  Hard Delete
   async hardDelete(id: string): Promise<{ message: string }> {

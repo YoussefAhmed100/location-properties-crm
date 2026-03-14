@@ -4,7 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { StringValue } from 'ms';
 
 export function generateToken(userId: string, jwtService: JwtService) {
-  return jwtService.sign({ userId });
+  const payload = { sub: userId };
+  return jwtService.sign(payload);
 }
 
 export function generateTokens(
@@ -16,12 +17,9 @@ export function generateTokens(
 
   const accessToken = jwtService.sign(payload);
 
-
   const refreshToken = jwtService.sign(payload, {
     secret: configService.getOrThrow<string>('refreshToken.secret'),
-    expiresIn: configService.getOrThrow<StringValue>(
-      'refreshToken.expiresIn',
-    ),
+    expiresIn: configService.getOrThrow<StringValue>('refreshToken.expiresIn'),
   });
 
   return { accessToken, refreshToken };

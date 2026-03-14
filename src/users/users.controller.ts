@@ -87,12 +87,12 @@ async changePassword(@CurrentUser('_id') userId: string, @Body() dto: ChangePass
   }
 // Soft Delete - Admin Only
 @Roles('super_admin', 'admin')
-  @ApiOperation({ summary: 'Deactivate user' })
+  @ApiOperation({ summary: 'Deactivate || Reactive user' })
   @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiOkResponse({ description: 'User deactivated successfully' })
-  @Patch(':id/deactive')
-  async softDelete(@Param('id', ParseObjectIdPipe) id: string) {
-    return this.usersService.softDelete(id);
+  @ApiOkResponse({ description: 'User deactivated ||Reactive successfully' })
+  @Patch(':id/activations')
+  async deactivateUser(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.usersService.toggleUserActive(id);
   }
 
   // hard delete - Admin Only
