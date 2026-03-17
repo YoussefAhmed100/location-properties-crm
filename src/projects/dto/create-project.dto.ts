@@ -34,6 +34,10 @@ export class CreateProjectDto {
   @IsNotEmpty()
   location: string;
 
+  @ApiProperty({
+   example: '65a1b2c3d4e5f6',
+    description: 'Developer ID',
+  })
 
 
   @ApiProperty({

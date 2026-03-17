@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { AreaType } from '../enums/area-type.enum';
+
 
 export type AreaDocument = HydratedDocument<Area>;
 
@@ -22,16 +22,8 @@ export class Area {
   })
   project: Types.ObjectId;
 
-  @Prop({
-    enum: AreaType,
-    required: true,
-  })
-  type: AreaType;
 
-  @Prop({
-    required: true,
-  })
-  group: string; // Villa Zones
+
 
   @Prop({
     trim: true,

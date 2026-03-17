@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { AreaType } from '../enums/area-type.enum';
+
 import { Exists } from 'src/common/validators/id-exists.validator';
 
 export class CreateAreaDto {
@@ -34,21 +34,9 @@ export class CreateAreaDto {
   project: string;
 
 
-  @ApiProperty({
-    enum: AreaType,
-    example: AreaType.VILLA_ZONE,
-  })
-  @IsEnum(AreaType)
-  type: AreaType;
 
 
-  @ApiProperty({
-    example: 'A',
-    description: 'Group name',
-  })
-  @IsString()
-  @IsNotEmpty()
-  group: string;
+
 
 
   @ApiPropertyOptional({
