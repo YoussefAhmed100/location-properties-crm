@@ -80,6 +80,7 @@ export class UnitsController {
   @ApiOperation({ summary: 'Get unit by id' })
   @ApiParam({ name: 'id', description: 'Unit ID' })
   @ApiOkResponse({ description: 'Return unit details' })
+  @Roles('admin','super_admin','sales')
   @Get(':id')
   @UseInterceptors(CacheInterceptor)
   @CacheKey('units')
@@ -93,6 +94,7 @@ export class UnitsController {
   @ApiConsumes('multipart/form-data')
 
   @Patch(':id')
+  @Roles('admin','super_admin','sales')
   @UseInterceptors(FilesInterceptor('images', MAX_FILES))
   update(
     @Param('id', ParseObjectIdPipe) id: string,
