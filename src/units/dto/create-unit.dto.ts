@@ -104,6 +104,13 @@ export class CreateUnitDto {
   @MaxLength(50)
   location?: string;
 
+  @ApiPropertyOptional({
+    example: 12,
+  })
+  @IsOptional()
+  @Min(0)
+  apartmentNumber?: number;
+
   @ApiProperty({
     example: 2,
   })
@@ -148,13 +155,7 @@ export class CreateUnitDto {
 
   // ================= APARTMENT =================
 
-  @ApiPropertyOptional({
-    example: 12,
-    description: 'Required if type = apartment',
-  })
-  @IsOptional()
-  @IsNumber()
-  apartmentNumber?: number;
+
 
   @ApiPropertyOptional({
     example: 'B1',
