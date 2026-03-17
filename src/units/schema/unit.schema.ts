@@ -45,7 +45,7 @@ area: Types.ObjectId;
   floor: number;
 
   @Prop({ trim: true })
-  phase: string;
+  location: string;
 
   @Prop({ min: 0 })
   apartmentNumber: number;
