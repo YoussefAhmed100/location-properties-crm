@@ -81,13 +81,13 @@ export class CreateUnitDto {
   floor: number;
 
   @ApiPropertyOptional({
-    example: 'Phase 1',
+    example: 'location 1',
     maxLength: 50,
   })
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  phase: string;
+  location: string;
 
   @ApiPropertyOptional({
     example: 12,

@@ -73,7 +73,7 @@ export class UnitsService {
      const cached = await this.cacheManager.get('units_all');
     if (cached) return cached;
     const features = new ApiFeatures(
-      this.unitModel.find().populate('project', 'name -_id'),
+      this.unitModel.find().populate('project', 'name -_id').populate('area', 'name  location -_id'),
       query,
     )
       .filter()
@@ -102,7 +102,7 @@ export class UnitsService {
 
     const unit = await this.unitModel
       .findById(id)
-      .populate('project', 'name -_id');
+      .populate('project', 'name -_id').populate('area', 'name  location -_id');
     if (!unit) {
       throw new NotFoundException('Unit not found');
     }
