@@ -1,4 +1,40 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserDto } from './create-user.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { IsPhoneNumberEGorSA } from 'src/common/validators/is-phone.validator';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto  {
+     @ApiProperty({
+        example: 'Ahmed Mohamed',
+        minLength: 6,
+      })
+      @IsOptional()
+      @IsString()
+      @MinLength(6)
+      fullName: string;
+    
+      @ApiProperty({
+        example: 'ahmed@example.com',
+      })
+      @IsOptional()
+      @IsEmail()
+      email: string;
+    
+      @ApiProperty({
+        example: '+201001234567',
+        description: 'Egyptian or Saudi phone number',
+      })
+      @IsOptional()
+      @IsString()
+      @IsPhoneNumberEGorSA({
+        message: 'Phone number must be valid Egyptian or Saudi number',
+      })
+      phone: string;
+    
+    
+}

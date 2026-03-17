@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Area } from 'src/areas/schema/area.schema';
 import { Developer } from 'src/developers/schema/developer.schema';
 
 export type ProjectDocument = Project & Document;
@@ -29,12 +28,7 @@ export class Project {
     required: true,
   })
   developer: Types.ObjectId; 
- @Prop({
-    type: Types.ObjectId,
-    ref:Area.name,
-    required: true,
-  })
-  area: string;
+
 
   @Prop({ required: true })
   startDate: Date;

@@ -38,10 +38,7 @@ export class CreateProjectDto {
    example: '65a1b2c3d4e5f6',
     description: 'Developer ID',
   })
-  @IsNotEmpty()
-  @IsMongoId()
-  @Exists('Area')
-  area: string;
+
 
   @ApiProperty({
     example: '65a1b2c3d4e5f6',
