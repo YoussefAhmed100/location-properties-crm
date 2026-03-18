@@ -62,7 +62,7 @@ export class AreasService {
 
   // @desc find one
   async findOne(id: string): Promise<Area> {
-    const area = await this.areaModel.findById(id);
+    const area = await this.areaModel.findById(id).populate('project', 'name -_id');
     if (!area) throw new NotFoundException(`Area "${id}" not found`);
     return area;
   }
