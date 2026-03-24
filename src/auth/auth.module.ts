@@ -12,6 +12,7 @@ import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 import { UploadService } from 'src/common/storage/upload.service';
 import { UsersRepository } from 'src/users/repositories/user.repository';
 import { USERS_REPOSITORY } from 'src/users/repositories/users.repository.interface';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { USERS_REPOSITORY } from 'src/users/repositories/users.repository.interf
         },
       }),
     }),
+    NotificationModule
   ],
 
   controllers: [AuthController],

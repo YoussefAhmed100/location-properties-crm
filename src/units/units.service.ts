@@ -10,7 +10,6 @@ import { Model, Types } from 'mongoose';
 import {  InjectModel } from '@nestjs/mongoose';
 import { Unit, UnitDocument } from './schema/unit.schema';
 import { UploadService } from 'src/common/storage/upload.service';
-import { UnitStatus } from './enums/unit-status.enum';
 import { ApiFeatures } from 'src/common/utils/api-features';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -54,7 +53,7 @@ export class UnitsService {
   // @desc-> find all
   async findAll(query: buildQueryDto) {
 
-     const cached = await this.cacheManager.get('units_all');
+    const cached = await this.cacheManager.get('units_all');
     if (cached) return cached;
     const features = new ApiFeatures(
       this.unitModel.find().populate('project', 'name -_id').populate('area', 'name  location -_id').lean(),

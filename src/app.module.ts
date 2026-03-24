@@ -20,6 +20,7 @@ import { TreasuryModule } from './treasury/treasury.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -46,12 +47,16 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.getOrThrow<string>('database.uri'),
+        maxPoolSize: 10,
+        minPoolSize: 2,
+        socketTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 5000,
       }),
     }),
 
-       CacheModule.register({
+    CacheModule.register({
       ttl: 60,
-      isGlobal: true, 
+      isGlobal: true,
     }),
 
     AuthModule,
@@ -67,6 +72,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
     EventModule,
     DashboardModule,
     TreasuryModule,
+    NotificationModule,
   ],
 
   providers: [
@@ -74,9 +80,9 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-       {
+    {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor, 
+      useClass: CacheInterceptor,
     },
   ],
 })
