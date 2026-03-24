@@ -8,7 +8,7 @@ import {
   Min,
   IsMongoId,
   MaxLength,
-
+  ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -24,7 +24,6 @@ export class CreateUnitDto {
   })
   @IsMongoId()
   @IsNotEmpty()
-
   @Exists('Project')
   project: string;
 
@@ -34,7 +33,7 @@ export class CreateUnitDto {
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
+  @MaxLength(30)
   unitCode: string;
 
   @ApiProperty({
@@ -55,48 +54,41 @@ export class CreateUnitDto {
     example: 1200000,
     minimum: 0,
   })
-  @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
   price: number;
 
   @ApiProperty({
-    example: 'B1',
+    example: '65a1b2c3d4e5f6',
+    description: 'Area ID',
   })
   @IsMongoId()
   @IsNotEmpty()
-
   @Exists('Area')
   area: string;
+
+  // ================= COMMON =================
 
   @ApiPropertyOptional({
     example: 5,
     minimum: 0,
+    description: 'Required for apartment',
   })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
-  floor: number;
+  floor?: number;
 
   @ApiPropertyOptional({
-    example: 'location 1',
+    example: 'New Cairo - Fifth Settlement',
     maxLength: 50,
   })
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  location: string;
-
-  @ApiPropertyOptional({
-    example: 12,
-  })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  apartmentNumber?: number;
+  location?: string;
 
   @ApiProperty({
     example: 2,
@@ -115,7 +107,8 @@ export class CreateUnitDto {
   bathrooms: number;
 
   @ApiProperty({
-    example: '90 M',
+    example: 120,
+    description: 'Size in square meters',
   })
   @Type(() => Number)
   @IsNumber()
@@ -128,7 +121,46 @@ export class CreateUnitDto {
   })
   @IsOptional()
   @IsEnum(UnitStatus)
-  status: UnitStatus;
+  status?: UnitStatus;
 
-  
+  // ================= APARTMENT =================
+
+  @ApiPropertyOptional({
+    example: 12,
+    description: 'Required if type = apartment',
+  })
+  @ValidateIf((o) => o.type === UnitType.APARTMENT)
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  apartmentNumber?: number;
+
+  @ApiPropertyOptional({
+    example: 'B1',
+    description: 'Required if type = apartment',
+  })
+  @ValidateIf((o) => o.type === UnitType.APARTMENT)
+  @IsNotEmpty()
+  @IsString()
+  building?: string;
+
+  // ================= VILLA =================
+
+  @ApiPropertyOptional({
+    example: 'Block A',
+    description: 'Required if type = villa',
+  })
+  @ValidateIf((o) => o.type === UnitType.VILLA)
+  @IsNotEmpty()
+  @IsString()
+  block?: string;
+
+  @ApiPropertyOptional({
+    example: 'Villa 12',
+    description: 'Required if type = villa',
+  })
+  @ValidateIf((o) => o.type === UnitType.VILLA)
+  @IsNotEmpty()
+  @IsString()
+  villaNumber?: string;
 }

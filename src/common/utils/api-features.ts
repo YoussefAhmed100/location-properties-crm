@@ -79,7 +79,7 @@ export class ApiFeatures<T> implements IQueryBuilder<T> {
     return this;
   }
   async count(): Promise<number> {
-  const clonedQuery = this.mongooseQuery.model.find(this.mongooseQuery.getQuery());
+   const clonedQuery = this.mongooseQuery.clone();
   return clonedQuery.countDocuments();
 }
 

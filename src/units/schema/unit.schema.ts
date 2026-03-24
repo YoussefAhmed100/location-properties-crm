@@ -11,13 +11,14 @@ export class Unit {
   @Prop({ type: Types.ObjectId, ref: 'Project', required: true, index: true })
   project: Types.ObjectId;
 
-  @Prop({ required: true, trim: true, unique: true })
+  @Prop({ required: true, trim: true, unique: true ,index: true})
   unitCode: string;
 
   @Prop({
     type: String,
     enum: UnitType,
     required: true,
+    index: true
   })
   type: UnitType;
 
@@ -70,6 +71,19 @@ area: Types.ObjectId;
   
    @Prop({default:Date.now})
     createdAt:Date
+
+
+  @Prop()
+  group: string;
+
+  @Prop()
+  building: string;
+
+  @Prop()
+  block: string;
+
+  @Prop()
+  villaNumber: string;
 }
 
 export const UnitSchema = SchemaFactory.createForClass(Unit);
