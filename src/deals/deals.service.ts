@@ -52,7 +52,7 @@ export class DealsService {
       this.dealModel
         .find()
         .populate('unit', 'images unitCode type -_id')
-        .populate('salesAgent', 'fullName -_id'),
+        .populate('salesAgent', 'fullName -_id')
       .populate('client', 'fullName -_id'),
       query,
     )
