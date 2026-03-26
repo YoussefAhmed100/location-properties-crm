@@ -53,6 +53,7 @@ export class DealsService {
         .find()
         .populate('unit', 'images unitCode type -_id')
         .populate('salesAgent', 'fullName -_id'),
+      .populate('client', 'fullName -_id'),
       query,
     )
       .filter()
