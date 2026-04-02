@@ -33,7 +33,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 
-const MAX_FILES = 5;
+const MAX_FILES = 10;
 
 @ApiTags('Projects')
 @ApiBearerAuth()
@@ -48,7 +48,13 @@ export class ProjectsController {
   @ApiCreatedResponse({ description: 'Project created successfully' })
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images', MAX_FILES))
+  @UseInterceptors(
+  FilesInterceptor('images', MAX_FILES , {
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    },
+  }),
+)
   create(
     @Body() dto: CreateProjectDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -100,7 +106,13 @@ export class ProjectsController {
   @ApiConsumes('multipart/form-data')
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images', MAX_FILES))
+   @UseInterceptors(
+  FilesInterceptor('images', MAX_FILES , {
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    },
+  }),
+)
   update(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: UpdateProjectDto,

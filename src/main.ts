@@ -6,18 +6,43 @@ import { setupSwagger } from './config/swagger.config';
 import compression from 'compression';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  /**
+   * SECURITY: Request Size Limit
+   */
+  app.use(express.json({
+  limit: process.env.REQUEST_LIMIT || '20kb',
+}));
+  app.use(express.urlencoded({ limit: '20kb', extended: true }));
+
+  /**
+   * Compression
+   */
   app.use(compression());
-  //  Helmet - sets security HTTP headers
+
+  /**
+   * Security Headers
+   */
   app.use(helmet());
 
-  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));  // or  'tiny', 'short', 'common'
-   
+  /**
+   * Logging
+   */
+  app.use(
+    morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'),
+  );
+
   app.setGlobalPrefix('api/v1');
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  /**
+   * Validation
+   */
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -27,6 +52,9 @@ async function bootstrap() {
     }),
   );
 
+  /**
+   * CORS
+   */
   app.enableCors({
     origin: process.env.FRONTEND_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

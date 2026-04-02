@@ -33,7 +33,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-const MAX_FILES = 5;
+const MAX_FILES = 10;
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin', 'super_admin', 'sales')
 @ApiBearerAuth()
@@ -46,7 +46,13 @@ export class UnitsController {
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ description: 'Unit created successfully' })
   @Post()
-  @UseInterceptors(FilesInterceptor('images', MAX_FILES))
+    @UseInterceptors(
+    FilesInterceptor('images', MAX_FILES , {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
   create(
     @Body() dto: CreateUnitDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -74,7 +80,13 @@ export class UnitsController {
   @ApiParam({ name: 'id', description: 'Unit ID' })
   @ApiConsumes('multipart/form-data')
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images', MAX_FILES))
+    @UseInterceptors(
+    FilesInterceptor('images', MAX_FILES , {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
   update(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() dto: UpdateUnitDto,
