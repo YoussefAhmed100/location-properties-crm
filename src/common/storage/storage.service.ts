@@ -4,6 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import * as storageProviderInterface from './interfaces/storage-provider.interface';
+import { fileTypeFromBuffer } from 'file-type';
 
 @Injectable()
 export class StorageService {
@@ -12,24 +13,41 @@ export class StorageService {
     private readonly provider: storageProviderInterface.IStorageProvider,
   ) {}
 
-  private validateFileType(
-    mimetype: string,
+  private readonly allowedFolders = ['users', 'locations', 'projects'];
+
+  /**
+   * Validate folder
+   */
+  private validateFolder(folder: string) {
+    if (!this.allowedFolders.includes(folder)) {
+      throw new BadRequestException('Invalid upload folder');
+    }
+  }
+
+  /**
+   *  REAL file validation (not mimetype)
+   */
+  private async validateFile(
+    file: Express.Multer.File,
     allowedTypes?: string[],
   ) {
+    const detected = await fileTypeFromBuffer(file.buffer);
+
+    if (!detected) {
+      throw new BadRequestException('Invalid file');
+    }
+
     const defaultTypes = [
       'image/jpeg',
       'image/png',
-      'image/gif',
-      'video/mp4',
-      'audio/mpeg',
-      'application/pdf',
+      'image/webp',
     ];
 
     const allowed = allowedTypes ?? defaultTypes;
 
-    if (!allowed.includes(mimetype)) {
+    if (!allowed.includes(detected.mime)) {
       throw new BadRequestException(
-        `Unsupported file type: ${mimetype}`,
+        `Unsupported file type: ${detected.mime}`,
       );
     }
   }
@@ -46,12 +64,13 @@ export class StorageService {
       throw new BadRequestException('No file uploaded');
     }
 
-    this.validateFileType(file.mimetype, options?.allowedTypes);
+    this.validateFolder(folder);
+    await this.validateFile(file, options?.allowedTypes);
 
     return this.provider.upload(
       file.buffer,
       file.mimetype,
-      folder ,
+      folder,
       { isPrivate: options?.isPrivate },
     );
   }
@@ -68,9 +87,11 @@ export class StorageService {
       throw new BadRequestException('No files uploaded');
     }
 
-    return Promise.all(
-      files.map((file) => {
-        this.validateFileType(file.mimetype, options?.allowedTypes);
+    this.validateFolder(folder);
+
+    const uploads = await Promise.all(
+      files.map(async (file) => {
+        await this.validateFile(file, options?.allowedTypes);
 
         return this.provider.upload(
           file.buffer,
@@ -80,12 +101,15 @@ export class StorageService {
         );
       }),
     );
+
+    return uploads;
   }
 
   async delete(publicId: string) {
     if (!this.provider.delete) {
       throw new Error('Delete not supported');
     }
+
     return this.provider.delete(publicId);
   }
 
@@ -93,6 +117,7 @@ export class StorageService {
     if (!this.provider.getSignedUrl) {
       throw new Error('Signed URLs not supported');
     }
+
     return this.provider.getSignedUrl(publicId);
   }
 }

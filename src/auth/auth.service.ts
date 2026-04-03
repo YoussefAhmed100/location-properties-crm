@@ -16,7 +16,8 @@ import type { LoginDto } from './dto/login.dto';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
 import { generateToken } from 'src/common/utils/generate-token';
 import { UploadService } from 'src/common/storage/upload.service';
-import { NotificationsService } from 'src/notification/notification.service';
+
+
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
     private readonly usersRepository: IUsersRepository,
     private readonly jwtService: JwtService,
     private readonly imageService: UploadService,
-    private notificationsService: NotificationsService
+ 
   ) {}
 
   // ── Register ───────────────────────────────────────────────
@@ -61,12 +62,8 @@ export class AuthService {
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid email or password');
 
-    const token = generateToken(user.id, this.jwtService);
-    await this.notificationsService.sendToUser(
-  user._id.toString(),
-  'مرحباً!',
-  'تم تسجيل دخولك بنجاح',
-);
+   const token = generateToken(user._id.toString(), this.jwtService);
+
 
     return UserResponseDto.fromEntity(user, token);
   }
