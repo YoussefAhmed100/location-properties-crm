@@ -30,16 +30,16 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
+import { UserRole } from 'src/users/enums/roles.enum';
+import { Public } from 'src/common/decorators/public.decorator';
+
 
 const MAX_FILES = 10;
 
 @ApiTags('Projects')
 @ApiBearerAuth()
 @Controller('projects')
- @UseGuards(JwtAuthGuard, RolesGuard)
- @Roles('admin','super_admin','sales')
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
@@ -64,6 +64,7 @@ export class ProjectsController {
 
   @ApiOperation({ summary: 'Get all projects' })
   @ApiOkResponse({ description: 'Return projects list' })
+  @Public()
   @Get()
   findAll(@Query() query: buildQueryDto) {
     return this.projectsService.findAll(query);
@@ -88,6 +89,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Get project summary stats' })
   @ApiParam({ name: 'id', description: 'Project ID' })
   @ApiOkResponse({ description: 'Return project summary stats' })
+  @Public()
   @Get('summary/:id')
   async getSummaryStats(@Param('id') projectId: string) {
     return this.projectsService.getoneProductSummary(projectId);
@@ -96,6 +98,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Get project by id' })
   @ApiParam({ name: 'id', description: 'Project ID' })
   @ApiOkResponse({ description: 'Return project details' })
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.projectsService.findOne(id);
@@ -126,6 +129,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Delete project' })
   @ApiParam({ name: 'id', description: 'Project ID' })
   @ApiOkResponse({ description: 'Project deleted successfully' })
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.projectsService.remove(id);

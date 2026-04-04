@@ -15,16 +15,16 @@ import { UpdateDeveloperDto } from './dto/update-developer.dto';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { UserRole } from 'src/users/enums/roles.enum';
+import { Public } from 'src/common/decorators/public.decorator';
 
 
 @ApiTags('Developers')
 @ApiBearerAuth() 
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 @Controller('developers')
- @UseGuards(JwtAuthGuard, RolesGuard)
- @Roles('admin','super_admin')
+
 export class DevelopersController {
   constructor(private readonly developersService: DevelopersService) {}
 
@@ -37,6 +37,7 @@ export class DevelopersController {
 
   @ApiOperation({ summary: 'Get all developers' })
   @ApiOkResponse({ description: 'Return developers list' })
+  @Public()
   @Get()
   findAll(@Query() query: buildQueryDto) {
     return this.developersService.findAll(query);
@@ -89,6 +90,7 @@ export class DevelopersController {
   @ApiOperation({ summary: 'Delete developer' })
   @ApiParam({ name: 'id', description: 'Developer ID' })
   @ApiOkResponse({ description: 'Developer deleted successfully' })
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Delete(':id')
   delete(@Param('id',ParseObjectIdPipe) id: string) {
     return this.developersService.remove(id);

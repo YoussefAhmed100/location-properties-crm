@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
@@ -7,6 +7,8 @@ import compression from 'compression';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import * as express from 'express';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { RolesGuard } from './common/guards/roles.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -61,6 +63,13 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Accept, Authorization',
     credentials: true,
   });
+
+  const reflector = app.get(Reflector);
+
+app.useGlobalGuards(
+  new JwtAuthGuard(reflector),
+  new RolesGuard(reflector),
+);
 
   setupSwagger(app);
 

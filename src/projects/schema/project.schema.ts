@@ -20,6 +20,8 @@ export class Project {
 
   @Prop({ required: true, trim: true })
   location: string; 
+  @Prop({ required: true, trim: true })
+  createdBy: string;
 
 
   @Prop({

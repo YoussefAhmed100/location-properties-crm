@@ -28,6 +28,10 @@ export class Area {
 
   @Prop({ required: true, trim: true })
   location: string;
+  @Prop({ type: String, trim: true })
+   createdBy: string;
+
+
  @Prop({ default:true})
   isActive?: boolean;
 

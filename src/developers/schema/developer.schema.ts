@@ -25,6 +25,10 @@ export class Developer {
   @Prop({ type: String, trim: true })
    location: string;
 
+   @Prop({ type: String, trim: true })
+  createdBy: string;
+
+
     @Prop({ type: [String] , trim: true })
     area: string[];
 

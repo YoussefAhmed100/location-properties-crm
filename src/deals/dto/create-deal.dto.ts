@@ -86,6 +86,25 @@ export class CreateDealDto {
   paidAmount: number;
 
   @ApiProperty({
+    description: 'Person assigned to the deal',
+    example: 'John Doe',
+  })
+  @IsNotEmpty()
+  @IsString()
+  createdBy: string;
+
+  @ApiProperty({
+    description: 'Commission amount in EGP',
+    example: 5000,
+    minimum: 0,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  commissionAmount: number;
+
+  @ApiProperty({
     description: 'Remaining amount in EGP',
     example: 150,
     minimum: 0,

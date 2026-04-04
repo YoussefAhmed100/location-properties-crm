@@ -31,7 +31,7 @@ export class CreateClientDto {
     example: 'ahmed@gmail.com',
     description: 'Client email address',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail()
   email: string;
 
@@ -42,6 +42,14 @@ export class CreateClientDto {
   @IsString()
   @IsNotEmpty()
   city: string;
+
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'Person assigned to the client',
+  })
+  @IsNotEmpty()
+  @IsString()
+   createdBy: string;
 
   @ApiProperty({
     example: 'Egypt',

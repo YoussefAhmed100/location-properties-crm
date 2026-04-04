@@ -29,15 +29,15 @@ import { UpdateUnitDto } from './dto/update-unit.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRole } from 'src/users/enums/roles.enum';
+import { Public } from 'src/common/decorators/public.decorator';
 
 const MAX_FILES = 10;
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @Roles('admin', 'super_admin', 'sales')
+
 @ApiBearerAuth()
 @ApiTags('Units')
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 @Controller('units')
 export class UnitsController {
   constructor(private readonly unitsService: UnitsService) {}
@@ -45,6 +45,7 @@ export class UnitsController {
   @ApiOperation({ summary: 'Create unit' })
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ description: 'Unit created successfully' })
+
   @Post()
     @UseInterceptors(
     FilesInterceptor('images', MAX_FILES , {
@@ -53,6 +54,7 @@ export class UnitsController {
       },
     }),
   )
+ 
   create(
     @Body() dto: CreateUnitDto,
     @UploadedFiles() files: Express.Multer.File[],
@@ -62,8 +64,9 @@ export class UnitsController {
 
   @ApiOperation({ summary: 'Get all units' })
   @ApiOkResponse({ description: 'Return units list' })
-  @Roles('admin', 'super_admin', 'sales')
-  @Get('all')
+  @Public()
+  @Get()
+
   findAll(@Query() query: buildQueryDto) {
     return this.unitsService.findAll(query);
   }
@@ -71,7 +74,7 @@ export class UnitsController {
   @ApiOperation({ summary: 'Get unit by id' })
   @ApiParam({ name: 'id', description: 'Unit ID' })
   @ApiOkResponse({ description: 'Return unit details' })
-  @Roles('admin','super_admin','sales')
+  @Public()
   @Get(':id')
   findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.unitsService.findOne(id);
@@ -80,6 +83,7 @@ export class UnitsController {
   @ApiOperation({ summary: 'Update unit' })
   @ApiParam({ name: 'id', description: 'Unit ID' })
   @ApiConsumes('multipart/form-data')
+
   @Patch(':id')
     @UseInterceptors(
     FilesInterceptor('images', MAX_FILES , {
@@ -99,7 +103,8 @@ export class UnitsController {
   @ApiOperation({ summary: 'Delete unit' })
   @ApiParam({ name: 'id', description: 'Unit ID' })
   @ApiOkResponse({ description: 'Unit deleted successfully' })
-  @Roles('admin', 'super_admin')
+
+ @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.unitsService.remove(id);

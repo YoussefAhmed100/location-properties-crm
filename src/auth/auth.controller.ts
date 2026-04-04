@@ -23,8 +23,10 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Throttle } from '@nestjs/throttler';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Auth')
+@Public()
 @Controller('auth')
 @Throttle({ default: { limit: 5, ttl: 60000 } })
 export class AuthController {

@@ -12,12 +12,12 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Transaction } from './schemas/transaction.schema';
 import type { Response } from 'express';
+import { UserRole } from 'src/users/enums/roles.enum';
 
 @ApiTags('Treasury Transactions')
 @ApiBearerAuth()
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
 @Controller('treasury/transactions')
-@UseGuards(AuthGuard('jwt'), JwtAuthGuard, RolesGuard)
-@Roles('admin','super_admin')
 export class TreasuryController {
   constructor(private readonly treasuryService: TreasuryService) {}
 

@@ -64,6 +64,15 @@ export class Unit {
   })
   status: UnitStatus;
 
+  @Prop({
+    type: String,
+  })
+  paymentType: string;
+  @Prop({
+    type: String,
+  })
+  assignedTo: string;
+
   @Prop({ required: true, min: 0 })
   size: number;
   @Prop({ type: [String], required: true })
@@ -83,7 +92,7 @@ export class Unit {
 
   @Prop()
   villaNumber: string;
-  
+
   @Prop()
   notes: string;
 }

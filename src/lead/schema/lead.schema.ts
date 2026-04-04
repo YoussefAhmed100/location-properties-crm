@@ -13,8 +13,12 @@ export class Lead {
   @Prop({ required: true })
   phone: string;
 
-  @Prop({ required: true })
+  @Prop({ unique: true, trim: true })
   email: string;
+
+   @Prop({ type: String, trim: true })
+   createdBy: string;
+
 
   @Prop({
     type: String,

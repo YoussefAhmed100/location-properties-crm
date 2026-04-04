@@ -13,21 +13,18 @@ import {
 import { LeadsService } from './lead.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
-
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 import { UpdateLeadStatusDto } from './dto/update-LeadStatus.dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { UserRole } from 'src/users/enums/roles.enum';
 
 @ApiTags('Leads')
 @ApiBearerAuth()
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 @Controller('leads')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'sales')
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) {}
 
@@ -84,8 +81,10 @@ export class LeadsController {
 
 
 
-  @Delete(':id')
+  
   @ApiOperation({ summary: 'Delete lead' })
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Delete(':id')
   remove(@Param('id',ParseObjectIdPipe) id: string) {
     return this.leadsService.remove(id);
   }

@@ -28,6 +28,14 @@ export class CreateEventDto {
   @IsNotEmpty()
   @IsEnum(EventType)
   type: EventType;
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'Name of the user who created the event',  
+  })
+  @IsNotEmpty()
+  @IsString()
+
+   createdBy: string
 
   @ApiProperty({
     example: '2026-03-22',

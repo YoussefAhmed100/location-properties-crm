@@ -48,6 +48,12 @@ export class CreateAreaDto {
   @IsString()
   @IsNotEmpty()
   location: string;
+   @ApiPropertyOptional({
+    example: 'John Doe',
+  })
+  @IsNotEmpty()
+  @IsString()
+   createdBy: string;
 
 
   @ApiPropertyOptional({
