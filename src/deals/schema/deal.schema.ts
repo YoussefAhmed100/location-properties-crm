@@ -66,6 +66,16 @@ export class Deal {
   })
   paidAmount: number;
 
+   @Prop({
+    type: Number,
+    min: 0,
+  })
+  commissionAmount: number;
+
+  @Prop({ type: String, trim: true })
+   createdBy: string;
+  
+
   @Prop({
     type: Number,
     min: 0,

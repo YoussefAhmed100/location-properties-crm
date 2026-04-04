@@ -13,7 +13,7 @@ export class Client {
   @Prop({ required: true, trim: true })
   phone: string;
 
-  @Prop({ required: true, unique: true, lowercase: true, trim: true })
+  @Prop({ unique: true, lowercase: true, trim: true })
   email: string;
 
   @Prop({ trim: true })
@@ -21,6 +21,8 @@ export class Client {
 
   @Prop({ trim: true })
   country: string;
+  @Prop({ type: String, trim: true })
+   createdBy: string;
 
  
 

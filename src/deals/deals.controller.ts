@@ -21,16 +21,13 @@ import { CreateDealDto } from './dto/create-deal.dto';
 import { UpdateDealDto } from './dto/update-deal.dto';
 import { buildQueryDto } from 'src/common/dto/base-query.dto';
 import { UpdateDealStatusDto } from './dto/update-deal-status.dto';
-
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRole } from 'src/users/enums/roles.enum';
 
 @ApiTags('Deals')
 @ApiBearerAuth()
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 @Controller('deals')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'sales')
 export class DealsController {
   constructor(private readonly dealsService: DealsService) {}
 
@@ -76,7 +73,7 @@ export class DealsController {
     return this.dealsService.updateStatus(id, updateDealStatusDto);
   }
 
- @Roles('super_admin', 'admin')
+ @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete deal' })
   remove(@Param('id') id: string) {

@@ -48,6 +48,16 @@ export class CreateDeveloperDto {
   @IsString()
   @IsOptional()
   location?: string;
+  
+   @ApiPropertyOptional({
+    example: 'John Doe',
+  })
+  @IsNotEmpty()
+  @IsString()
+  createdBy: string;
+
+
+    
     @ApiPropertyOptional({
     example: 'website links',
   })

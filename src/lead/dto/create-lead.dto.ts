@@ -70,6 +70,13 @@ export class CreateLeadDto {
   @IsMongoId()
   @Exists('User')
   assignedTo: string;
+  @ApiPropertyOptional({
+    example: 'admin',
+    description: 'User who created the lead',
+  })
+  @IsNotEmpty()
+  @IsString()
+   createdBy: string
 
   @ApiPropertyOptional({
     example: 'Interested in enterprise package',

@@ -8,7 +8,7 @@ export const mapUpdateTransaction = (dto: UpdateTransactionDto) => {
   if (dto.salesAgent) mapped.salesAgent = new Types.ObjectId(dto.salesAgent);
   if (dto.date) mapped.date = new Date(dto.date);
 
-  // لا نضيف createdBy في update
+ 
   delete mapped.createdBy;
 
   return mapped;

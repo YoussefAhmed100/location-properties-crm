@@ -25,6 +25,10 @@ export class Event {
   @Prop({required:true})
   location: string
 
+  @Prop({ type: String, trim: true })
+  createdBy: string
+
+
   @Prop({ type: Types.ObjectId, ref: 'Client' ,required:true})
   client
 

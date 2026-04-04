@@ -26,15 +26,14 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
+
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRole } from 'src/users/enums/roles.enum';
 
 @ApiTags('Events')
 @ApiBearerAuth() 
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 @Controller('events')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'sales')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
@@ -78,15 +77,14 @@ export class EventController {
   })
   @ApiBody({ type: UpdateEventDto })
   @ApiResponse({ status: 200, description: 'Event updated successfully' })
-  @Roles('super_admin', 'admin')
   update(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateEventDto: UpdateEventDto,
   ) {
     return this.eventService.update(id, updateEventDto);
   }
-@Roles('super_admin', 'admin')
-  @Delete(':id')
+
+  
   @ApiOperation({ summary: 'Delete event by ID' })
   @ApiParam({
     name: 'id',
@@ -94,7 +92,9 @@ export class EventController {
     example: '65f7c3c4a1b2c3d4e5f67890',
   })
   @ApiResponse({ status: 200, description: 'Event deleted successfully' })
-  @ApiResponse({ status: 404, description: 'Event not found' })
+   @ApiResponse({ status: 404, description: 'Event not found' })
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @Delete(':id')
   remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.eventService.remove(id);
   }

@@ -20,10 +20,12 @@ export class ClientService {
 
   async create(createDto: CreateClientDto): Promise<Client> {
     // make sure email is unique
+    if (createDto.email) {
     const existing = await this.clientModel.findOne({ email: createDto.email });
     if (existing) {
       throw new ConflictException('Client with this email already exists');
     }
+  }
     return this.clientModel.create(createDto);
   }
 
