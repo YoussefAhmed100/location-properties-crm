@@ -5,4 +5,9 @@ export enum UnitType {
   TOWNHOUSE = 'townhouse',
   STUDIO = 'studio',
   PENTHOUSE = 'penthouse',
+  SEPARATE='separate',
+  BILATERAL='bilateral',
+  QUADRANT='quadrant'
+
+
 }

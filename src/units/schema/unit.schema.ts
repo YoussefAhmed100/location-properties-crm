@@ -71,7 +71,7 @@ export class Unit {
   @Prop({
     type: String,
   })
-  assignedTo: string;
+ createdBy: string;
 
   @Prop({ required: true, min: 0 })
   size: number;
