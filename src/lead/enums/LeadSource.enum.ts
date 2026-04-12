@@ -4,8 +4,7 @@ export enum LeadSource {
   GOOGLE = 'google',
   INSTAGRAM = 'instagram',
   TIKTOK = 'tiktok',
-  REFERRAL = 'referral',
   COLD_CALL = 'cold_call',
   PROPERTY_FINDER = 'property_finder',
-  DEPOSIL = 'deposil',
+  DUBIZZLE = 'dubizzle',
 }

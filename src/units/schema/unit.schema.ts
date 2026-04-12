@@ -92,6 +92,16 @@ export class Unit {
 
   @Prop()
   villaNumber: string;
+   @Prop()
+  paidAmount: string;
+   @Prop()
+  remainingAmount: string;
+
+   @Prop()
+  villaType: string;
+
+   @Prop()
+  landArea: string;
 
   @Prop()
   notes: string;

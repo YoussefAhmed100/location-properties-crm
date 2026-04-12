@@ -184,4 +184,36 @@ export class CreateUnitDto {
   @IsOptional()
   @IsString()
   villaNumber?: string;
+
+   @ApiProperty({
+    example: '50000',
+    description: 'Amount already paid',
+  })
+  @IsString()
+  @IsOptional()
+  paidAmount: string;
+
+  @ApiProperty({
+    example: '150000',
+    description: 'Remaining amount to be paid',
+  })
+  @IsString()
+   @IsOptional()
+  remainingAmount: string;
+
+  @ApiProperty({
+    example: 'Luxury',
+    description: 'Type of villa',
+  })
+  @IsString()
+    @IsOptional()
+  villaType: string;
+
+  @ApiProperty({
+    example: '350 sqm',
+    description: 'Land area of the villa',
+  })
+  @IsString()
+  @IsOptional()
+  landArea: string;
 }
