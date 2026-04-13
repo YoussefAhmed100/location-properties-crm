@@ -15,18 +15,34 @@ export class ApiFeatures<T> implements IQueryBuilder<T> {
     this.mongooseQuery = mongooseQuery;
     this.queryString = queryString;
   }
+filter(): this {
+  const queryObj: any = { ...this.queryString };
 
-  filter(): this {
-    const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields', 'keyword'];
-    excludedFields.forEach((field) => delete queryObj[field]);
+  const excludedFields = ['page', 'sort', 'limit', 'fields', 'keyword'];
+  excludedFields.forEach((field) => delete queryObj[field]);
 
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lt|lte)\b/g, (match) => `$${match}`);
+  // ✅ convert comma-separated values → $in
+  Object.keys(queryObj).forEach((key) => {
+    if (typeof queryObj[key] === 'string' && queryObj[key].includes(',')) {
+      queryObj[key] = {
+        $in: queryObj[key]
+          .split(',')
+          .map((val: string) => val.trim()),
+      };
+    }
+  });
 
-    this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
-    return this;
-  }
+  let queryStr = JSON.stringify(queryObj);
+
+  queryStr = queryStr.replace(
+    /\b(gte|gt|lt|lte)\b/g,
+    (match) => `$${match}`,
+  );
+
+  this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
+
+  return this;
+}
 
   sort(): this {
     if (this.queryString.sort) {
