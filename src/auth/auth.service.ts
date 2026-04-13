@@ -29,22 +29,6 @@ export class AuthService {
  
   ) {}
 
-  // ── Register ───────────────────────────────────────────────
-
-  async register(
-    dto: RegisterDto,
-    files: Express.Multer.File[],
-  ): Promise<UserResponseDto> {
-    const existing = await this.usersRepository.findByEmail(dto.email);
-    if (existing) throw new ConflictException('Email already in use');
-
-    const images = files?.length ? await this.imageService.upload(files) : [];
-    const user = await this.usersRepository.create({ ...dto, images });
-
-    const token = generateToken(user.id, this.jwtService);
-
-    return UserResponseDto.fromEntity(user, token);
-  }
 
   // ── Login ──────────────────────────────────────────────────
 

@@ -45,7 +45,7 @@ export class CreateUserDto {
 
   @ApiPropertyOptional({
     enum: UserRole,
-    example: UserRole.CUSTOMER,
+    example: UserRole.ADMIN,
   })
   @IsOptional()
   @IsEnum(UserRole)

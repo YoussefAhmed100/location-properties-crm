@@ -19,7 +19,7 @@ export class User {
   @Prop({ required: true, trim: true })
   phone: string;
 
-  @Prop({ type: String, enum: UserRole, default: UserRole.CUSTOMER })
+  @Prop({ type: String, enum: UserRole, default: UserRole.SALES  })
   role: UserRole;
 
   @Prop({ default: true })

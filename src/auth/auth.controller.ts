@@ -18,10 +18,8 @@ import {
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { Throttle } from '@nestjs/throttler';
 import { Public } from 'src/common/decorators/public.decorator';
 
@@ -32,13 +30,6 @@ import { Public } from 'src/common/decorators/public.decorator';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Register new user' })
-  @ApiCreatedResponse({ description: 'User registered successfully' })
-  @Post('register')
-  @UseInterceptors(FilesInterceptor('images',5))
-  signup(@Body() dto: RegisterDto,@UploadedFiles() files: Express.Multer.File[]) {
-    return this.authService.register(dto, files);
-  }
 
   @ApiOperation({ summary: 'User login' })
   @ApiOkResponse({ description: 'User logged in successfully' })

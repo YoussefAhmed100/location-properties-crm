@@ -56,7 +56,7 @@ export class UsersController {
   }
    @ApiOperation({ summary: 'Change user password' })
   @ApiOkResponse({ description: 'Password changed  successfully' })
- @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.CUSTOMER, UserRole.SALES)
+ @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
 @Patch('change-password')
 async changePassword(@CurrentUser('_id') userId: string, @Body() dto: ChangePasswordDto) {
   return this.usersService.changePassword(userId, dto);
@@ -65,7 +65,7 @@ async changePassword(@CurrentUser('_id') userId: string, @Body() dto: ChangePass
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ type: UserResponseDto })
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.CUSTOMER, UserRole.SALES)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
   @Get(':id')
   async findOne(@Param('id', ParseObjectIdPipe) id: string): Promise<UserResponseDto> {
     return this.usersService.findOne(id);
