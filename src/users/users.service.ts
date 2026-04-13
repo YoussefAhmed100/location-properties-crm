@@ -18,6 +18,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { UploadService } from 'src/common/storage/upload.service';
 import { generateToken } from 'src/common/utils/generate-token';
 
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -25,6 +26,7 @@ export class UsersService {
     private readonly usersRepository: IUsersRepository,
     private readonly imageService: UploadService,
     private readonly jwtService: JwtService,
+
   ) {}
 
   async create(
@@ -43,7 +45,6 @@ export class UsersService {
     return UserResponseDto.fromEntity(user, token);
   }
 
-
   async findAll(query: buildQueryDto) {
     const { results, pagination, data } =
       await this.usersRepository.findAll(query);
@@ -55,40 +56,51 @@ export class UsersService {
     };
   }
 
-
   async findOne(id: string): Promise<UserResponseDto> {
     const user = await this.usersRepository.findById(id);
-    if (!user) throw new NotFoundException(`No active user found with id: ${id}`);
+    if (!user)
+      throw new NotFoundException(`No active user found with id: ${id}`);
 
     return UserResponseDto.fromEntity(user);
   }
 
 
-  async updateUser(
-    id: string,
-    dto: UpdateUserDto,
-    files?: Express.Multer.File[],
-  ): Promise<UserResponseDto> {
-    const user = await this.usersRepository.findById(id);
-    if (!user) throw new NotFoundException(`No active user found with id: ${id}`);
+async updateUser(
+  id: string,
+  dto: UpdateUserDto,
+  files?: Express.Multer.File[],
+): Promise<UserResponseDto> {
+  const user = await this.usersRepository.findById(id);
 
-    if (dto.email) {
-      const emailTaken = await this.usersRepository.findByEmailExcludingId(
-        dto.email,
-        id,
-      );
-      if (emailTaken) throw new ConflictException('Email already used');
-    }
+  if (!user)
+    throw new NotFoundException(
+      `No active user found with id: ${id}`,
+    );
 
-    if (files?.length) {
-      dto['images'] = await this.imageService.replace(user.images, files);
-    }
+  if (dto.email) {
+    const emailTaken = await this.usersRepository.findByEmailExcludingId(
+      dto.email,
+      id,
+    );
 
-    const updated = await this.usersRepository.updateById(user, dto);
-
-    return UserResponseDto.fromEntity(updated);
+    if (emailTaken) throw new ConflictException('Email already used');
   }
 
+  if (files?.length) {
+    dto['images'] = await this.imageService.replace(user.images, files);
+  }
+
+  const updated = await this.usersRepository.updateById(
+    user._id.toString(),
+    dto,
+  );
+
+  if (!updated) {
+    throw new NotFoundException('User not found during update');
+  }
+
+  return UserResponseDto.fromEntity(updated);
+}
 
   async toggleUserActive(
     userId: string,
@@ -108,7 +120,6 @@ export class UsersService {
     return { message: 'User activated successfully', isActive: true };
   }
 
-
   async hardDelete(id: string): Promise<{ message: string }> {
     const user = await this.usersRepository.findById(id);
     if (!user) throw new NotFoundException('User not found');
@@ -118,7 +129,6 @@ export class UsersService {
 
     return { message: 'User deleted permanently' };
   }
-
 
   async changePassword(userId: string, dto: ChangePasswordDto) {
     const user = await this.usersRepository.findByIdWithPassword(userId);

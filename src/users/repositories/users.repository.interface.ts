@@ -20,7 +20,10 @@ export interface IUsersRepository {
 
   // ── Mutations ─────────────────────────────────────────────
   create(data: Partial<User>): Promise<UserDocument>;
-  updateById(doc: UserDocument, data: Partial<User>): Promise<UserDocument>;
+updateById(
+  id: string,
+  data: Partial<User>,
+): Promise<UserDocument | null>;
   save(doc: UserDocument): Promise<UserDocument>;
   deleteOne(doc: UserDocument): Promise<void>;
 }

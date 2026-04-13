@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { User, UserDocument } from '../schema/users.schema';
-import type { IUsersRepository, PaginatedUsers } from './users.repository.interface';
+import type {
+  IUsersRepository,
+  PaginatedUsers,
+} from './users.repository.interface';
 import type { buildQueryDto } from '../../common/dto/base-query.dto';
 import { ApiFeatures } from '../../common/utils/api-features';
 
@@ -21,19 +24,22 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findByEmailWithPassword(email: string): Promise<UserDocument | null> {
-    return this.userModel.findOne({ email }).select('+password').lean().exec();
+    return this.userModel.findOne({ email }).select('+password').exec();
   }
 
   async findByEmailExcludingId(
     email: string,
     excludeId: string,
   ): Promise<UserDocument | null> {
-    return this.userModel.findOne({ email, _id: { $ne: excludeId } }).lean().exec();
+    return this.userModel.findOne({ email, _id: { $ne: excludeId } }).exec();
   }
 
-  async findById(id: string): Promise<UserDocument | null> {
-    return this.userModel.findById(id).exec();
-  }
+ async findById(id: string): Promise<UserDocument | null> {
+  return this.userModel.findOne({
+    _id: id,
+    isActive: true,
+  }).exec();
+}
 
   async findByIdWithPassword(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id).select('+password').exec();
@@ -62,11 +68,13 @@ export class UsersRepository implements IUsersRepository {
     return this.userModel.create(data);
   }
 
-  async updateById(doc: UserDocument, data: Partial<User>): Promise<UserDocument> {
-    Object.assign(doc, data);
-    return doc.save();
-  }
 
+  async updateById(id: string, data: Partial<User>) {
+    return this.userModel.findByIdAndUpdate(id, data, {
+      returnDocument: 'after',
+      runValidators: true,
+    }).exec();
+  }
   async save(doc: UserDocument): Promise<UserDocument> {
     return doc.save();
   }
