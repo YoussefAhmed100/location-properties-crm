@@ -4,7 +4,6 @@ import {
   IsEmail,
   IsNotEmpty,
   IsOptional,
-  IsArray,
 } from 'class-validator';
 import { IsPhoneNumberEGorSA } from 'src/common/validators/is-phone.validator';
 
@@ -43,27 +42,18 @@ export class CreateDeveloperDto {
   phone: string;
 
   @ApiPropertyOptional({
-    example: 'Cairo, Egypt',
-  })
-  @IsString()
-  @IsOptional()
-  location?: string;
-  
-   @ApiPropertyOptional({
     example: 'John Doe',
   })
   @IsNotEmpty()
   @IsString()
   createdBy: string;
 
-
-    
-    @ApiPropertyOptional({
+  @ApiPropertyOptional({
     example: 'website links',
   })
   @IsString()
   @IsOptional()
-  site:string 
+  site: string;
 
   @ApiPropertyOptional({
     type: [String],

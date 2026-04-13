@@ -6,8 +6,8 @@ export type ProjectDocument = Project & Document;
 
 export enum ProjectStatus {
   ACTIVE = 'Active',
-  INACTIVE = 'Inactive',
-  SOLD_OUT = 'Sold Out',
+  COMPLETED = 'Completed',
+  UPCOMING = 'Upcoming',
 }
 
 @Schema({ timestamps: true })

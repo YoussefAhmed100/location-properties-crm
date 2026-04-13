@@ -22,8 +22,7 @@ export class Developer {
   @Prop({ required: true, trim: true })
   phone: string;
 
-  @Prop({ type: String, trim: true })
-   location: string;
+ 
 
    @Prop({ type: String, trim: true })
   createdBy: string;
