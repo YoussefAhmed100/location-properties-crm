@@ -35,10 +35,10 @@ async updateTransaction(transactionId: string, dto: UpdateTransactionDto) {
   return this.connection.transaction(async (session) => {
     const data = mapUpdateTransaction(dto);
 
-   const exists = await this.transactionRepo.findDuplicate(dto, session);
-    if (exists) {
-      throw new ConflictException('Duplicate transaction detected');
-    }
+  //  const exists = await this.transactionRepo.findDuplicate(dto, session);
+  //   if (exists) {
+  //     throw new ConflictException('Duplicate transaction detected');
+  //   }
 
     // 2️⃣ Perform update
     return this.transactionRepo.update(transactionId, data, session);

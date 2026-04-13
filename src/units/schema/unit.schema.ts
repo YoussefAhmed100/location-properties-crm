@@ -90,18 +90,20 @@ export class Unit {
   @Prop()
   block: string;
 
-  @Prop()
-  villaNumber: string;
-   @Prop()
-  paidAmount: string;
-   @Prop()
-  remainingAmount: string;
+  @Prop({ type: Number, min: 0 })
+  villaNumber: number;
+  @Prop({ type: Number, min: 0 })
+  paidAmount: number;
+   @Prop({ type: Number, min: 0 })
+  remainingAmount: number;
 
-   @Prop()
+  @Prop({ type: String })
   villaType: string;
 
-   @Prop()
-  landArea: string;
+  @Prop({ type: Number, min: 0 })
+  landArea: number;
+  @Prop({ type: Number, min: 0 })
+  requestedAmount: number;
 
   @Prop()
   notes: string;

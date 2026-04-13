@@ -132,6 +132,7 @@ export class CreateUnitDto {
     example: 120,
     description: 'Size in square meters',
   })
+  @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
@@ -182,24 +183,30 @@ export class CreateUnitDto {
     description: 'Required if type = villa',
   })
   @IsOptional()
-  @IsString()
-  villaNumber?: string;
+   @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  villaNumber?: number;
 
    @ApiProperty({
     example: '50000',
     description: 'Amount already paid',
   })
-  @IsString()
-  @IsOptional()
-  paidAmount: string;
+   @IsOptional()
+   @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  paidAmount: number;
 
   @ApiProperty({
     example: '150000',
     description: 'Remaining amount to be paid',
   })
-  @IsString()
-   @IsOptional()
-  remainingAmount: string;
+  @IsOptional()
+   @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  remainingAmount: number;
 
   @ApiProperty({
     example: 'Luxury',
@@ -213,7 +220,19 @@ export class CreateUnitDto {
     example: '350 sqm',
     description: 'Land area of the villa',
   })
-  @IsString()
   @IsOptional()
-  landArea: string;
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  landArea: number;
+  @ApiProperty({
+    example: '200000',
+    description: 'Amount requested by the client',
+  })
+  @IsOptional()
+   @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+
+  requestedAmount: number;
 }
