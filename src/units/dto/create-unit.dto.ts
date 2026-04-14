@@ -67,6 +67,11 @@ export class CreateUnitDto {
   @IsNotEmpty()
   @Exists('Area')
   area: string;
+   @ApiProperty({
+    example: '65a1b2c3d4e5f6',
+    description: 'Client ID',
+  })
+  @IsOptional()
   @IsMongoId()
   @Exists('Client')
   client: string;

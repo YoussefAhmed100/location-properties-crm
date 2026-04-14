@@ -67,7 +67,7 @@ export class Unit {
   @Prop({
     type: Types.ObjectId,
     ref: 'Client',
-    required: true,
+   
    
   })
   client: Types.ObjectId;
