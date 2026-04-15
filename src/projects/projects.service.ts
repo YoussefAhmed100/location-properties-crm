@@ -188,38 +188,104 @@ async getDashboardSummary() {
 
 
 
-
 async getoneProductSummary(projectId: string) {
-  const [units, availableUnits, soldUnits, priceData] = await Promise.all([
-    this.unitModel.countDocuments({ project: projectId }),
-    this.unitModel.countDocuments({ status: 'available', project: projectId }),
-    this.unitModel.countDocuments({ status: 'sold', project: projectId }),
-    this.unitModel.aggregate([
-      { $match: { project: new Types.ObjectId(projectId), status: 'sold' } },
-      { $group: { _id: null, avgPrice: { $avg: '$price' } } },
-    ]),
+  const projectObjectId = new Types.ObjectId(projectId);
+
+  const [summary] = await this.unitModel.aggregate([
+    {
+      $match: { project: projectObjectId },
+    },
+
+    {
+      $group: {
+        _id: null,
+
+        totalUnits: { $sum: 1 },
+
+        availableUnits: {
+          $sum: {
+            $cond: [{ $eq: ['$status', 'available'] }, 1, 0],
+          },
+        },
+
+        soldUnits: {
+          $sum: {
+            $cond: [{ $eq: ['$status', 'sold'] }, 1, 0],
+          },
+        },
+
+        avgSoldPrice: {
+          $avg: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$status', 'sold'] },
+                  { $ne: ['$price', null] },
+                ],
+              },
+              '$price',
+              '$$REMOVE',
+            ],
+          },
+        },
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+
+        totalUnits: 1,
+        availableUnits: 1,
+        soldUnits: 1,
+
+        completionRate: {
+          $cond: [
+            { $eq: ['$totalUnits', 0] },
+            0,
+            {
+              $round: [
+                {
+                  $multiply: [
+                    { $divide: ['$soldUnits', '$totalUnits'] },
+                    100,
+                  ],
+                },
+                1,
+              ],
+            },
+          ],
+        },
+
+        averagePriceEGP: { $round: ['$avgSoldPrice', 0] },
+
+        averagePriceMillion: {
+          $round: [{ $divide: ['$avgSoldPrice', 1_000_000] }, 2],
+        },
+      },
+    },
   ]);
 
-  const completionRate = units > 0
-    ? parseFloat(((soldUnits / units) * 100).toFixed(1))
-    : 0;
-
-  const averagePrice = priceData[0]?.avgPrice
-    ? parseFloat((priceData[0].avgPrice / 1_000_000  ).toFixed(1))
-    : 0;
+  const data = summary || {
+    totalUnits: 0,
+    availableUnits: 0,
+    soldUnits: 0,
+    completionRate: 0,
+    averagePriceEGP: 0,
+    averagePriceMillion: 0,
+  };
 
   return {
-    totalUnits: units,
-    availableUnits,
-    soldUnits,
+    totalUnits: data.totalUnits,
+    availableUnits: data.availableUnits,
+    soldUnits: data.soldUnits,
     quickStats: {
-      completionRate,   // 62.9
-      averagePrice,     // 3.2 M
+      completionRate: data.completionRate,
+      averagePrice: data.averagePriceEGP,
+      
     },
   };
 }
-
-
 
 
 

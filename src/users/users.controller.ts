@@ -31,6 +31,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserRole } from './enums/roles.enum';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -97,6 +98,7 @@ async changePassword(@CurrentUser('_id') userId: string, @Body() dto: ChangePass
   @ApiOperation({ summary: 'Delete user permanently' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ description: 'User deleted successfully' })
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @Delete(':id/delete')
   async hardDelete(@Param('id',ParseObjectIdPipe) id: string) {
     return this.usersService.hardDelete(id);
