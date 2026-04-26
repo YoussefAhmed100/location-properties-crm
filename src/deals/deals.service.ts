@@ -80,7 +80,8 @@ async findAll(queryDto: buildQueryDto) {
     const deal = await this.dealModel
       .findById(id)
       .populate('unit', 'images unitCode type ')
-      .populate('salesAgent', 'fullName ');
+      .populate('salesAgent', 'fullName ')
+      .populate('client', 'fullName ');
 
     if (!deal) {
       throw new NotFoundException('Deal not found');
@@ -119,27 +120,37 @@ async findAll(queryDto: buildQueryDto) {
     }
 
     deal.status = dto.status;
+    
     return deal.save();
   }
 
   // -----------------------
-  async update(id: string, updateDealDto: UpdateDealDto) {
-    const deal = await this.dealModel.findById(id);
+async update(id: string, updateDealDto: UpdateDealDto) {
+  const deal = await this.dealModel.findById(id);
 
-    if (!deal) {
-      throw new NotFoundException('Deal not found');
-    }
-
-    if (updateDealDto.status) {
-      throw new BadRequestException(
-        'Use /status endpoint to update deal status',
-      );
-    }
-
-    Object.assign(deal, updateDealDto);
-
-    return deal.save();
+  if (!deal) {
+    throw new NotFoundException('Deal not found');
   }
+
+  if (updateDealDto.status) {
+    throw new BadRequestException(
+      'Use /status endpoint to update deal status',
+    );
+  }
+
+  
+  if (updateDealDto.client) {
+    updateDealDto.client = new Types.ObjectId(updateDealDto.client) as any;
+  }
+
+  if (updateDealDto.unit) {
+    updateDealDto.unit = new Types.ObjectId(updateDealDto.unit) as any;
+  }
+
+  Object.assign(deal, updateDealDto);
+
+  return deal.save();
+}
 
   // delete deal and set unit back to available if not closed won
   async remove(id: string): Promise<{ message: string }> {

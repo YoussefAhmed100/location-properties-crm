@@ -5,7 +5,7 @@ import { UserRole } from 'src/users/enums/roles.enum';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema({ timestamps: true })
+@Schema()
 export class User {
   @Prop({ required: true, trim: true })
   fullName: string;
@@ -51,7 +51,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.pre<UserDocument>('save', async function () {
   if (!this.isModified('password')) return;
 
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcrypt.hash(this.password, 10);
 
   if (!this.isNew) {
     this.passwordChangedAt = new Date();

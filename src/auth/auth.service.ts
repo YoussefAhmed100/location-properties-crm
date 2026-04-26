@@ -2,7 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   NotFoundException,
-  ConflictException,
+  
   Inject,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -11,11 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 
 import { USERS_REPOSITORY } from '../users/repositories/users.repository.interface';
 import type { IUsersRepository } from '../users/repositories/users.repository.interface';
-import type { RegisterDto } from './dto/register.dto';
 import type { LoginDto } from './dto/login.dto';
 import { UserResponseDto } from 'src/users/dto/user-response.dto';
 import { generateToken } from 'src/common/utils/generate-token';
-import { UploadService } from 'src/common/storage/upload.service';
 
 
 
@@ -25,32 +23,39 @@ export class AuthService {
     @Inject(USERS_REPOSITORY)
     private readonly usersRepository: IUsersRepository,
     private readonly jwtService: JwtService,
-    private readonly imageService: UploadService,
+   
  
   ) {}
 
 
   // ── Login ──────────────────────────────────────────────────
 
-  async login(dto: LoginDto): Promise<UserResponseDto> {
-    const user = await this.usersRepository.findByEmailWithPassword(dto.email);
+ async login(dto: LoginDto): Promise<UserResponseDto> {
 
-    if (!user) throw new UnauthorizedException('Invalid email or password');
+  const user = await this.usersRepository.findByEmailWithPassword(dto.email);
 
-    if (!user.isActive) {
-      throw new UnauthorizedException(
-        'Your account has been deactivated. Please contact support.',
-      );
-    }
-
-    const isMatch = await bcrypt.compare(dto.password, user.password);
-    if (!isMatch) throw new UnauthorizedException('Invalid email or password');
-
-   const token = generateToken(user._id.toString(), this.jwtService);
-
-
-    return UserResponseDto.fromEntity(user, token);
+  if (!user) {
+    throw new UnauthorizedException('Invalid email or password');
   }
+
+  if (!user.isActive) {
+    throw new UnauthorizedException(
+      'Your account has been deactivated. Please contact support.',
+    );
+  }
+
+  const isMatch = await bcrypt.compare(dto.password, user.password);
+
+  if (!isMatch) {
+    throw new UnauthorizedException('Invalid email or password');
+  }
+
+  // 4. JWT GENERATION
+  const token = generateToken(user._id.toString(), this.jwtService);
+
+  return  UserResponseDto.fromEntity(user, token);
+
+}
 
   // ── Forgot Password ────────────────────────────────────────
 

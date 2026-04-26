@@ -43,6 +43,7 @@ export class UsersController {
 
     @ApiOperation({ summary: 'create new user' })
     @ApiCreatedResponse({ description: 'User created successfully' })
+    @Public()
     @Post('create')
     @UseInterceptors(FilesInterceptor('images',10))
     create(@Body() dto:CreateUserDto,@UploadedFiles() files: Express.Multer.File[]) {
