@@ -123,6 +123,15 @@ export class UnitsService {
       incUpdate[`${newStatus}Units`] = 1;
     }
 
+      
+      if (updateUnitDto.area) {
+        updateUnitDto.area = new Types.ObjectId(updateUnitDto.area) as any;
+      }
+    
+      if (updateUnitDto.project) {
+        updateUnitDto.project = new Types.ObjectId(updateUnitDto.project) as any;
+      }
+
     Object.assign(unit, updateUnitDto);
     await unit.save();
     await this.cacheManager.del('units_all');
