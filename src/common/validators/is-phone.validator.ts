@@ -5,25 +5,26 @@ import {
 } from 'class-validator';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
-export function IsPhoneNumberEGorSA(validationOptions?: ValidationOptions) {
+export function IsInternationalPhoneNumber(
+  validationOptions?: ValidationOptions,
+) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isPhoneNumberEGorSA',
+      name: 'isInternationalPhoneNumber',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: validationOptions,
       validator: {
         validate(value: any) {
-          if (!value) return false;
+          if (!value || typeof value !== 'string') return false;
 
           const phone = parsePhoneNumberFromString(value);
 
-          if (!phone || !phone.isValid()) return false;
-
-          return phone.country === 'EG' || phone.country === 'SA';
+          return phone ? phone.isValid() : false;
         },
+
         defaultMessage(args: ValidationArguments) {
-          return `${args.property} must be a valid phone number from Egypt (EG) or Saudi Arabia (SA)`;
+          return `${args.property} must be a valid phone number`;
         },
       },
     });

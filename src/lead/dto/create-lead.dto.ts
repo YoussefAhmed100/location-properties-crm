@@ -12,7 +12,7 @@ import { LeadSource } from '../enums/LeadSource.enum';
 import { LeadStatus } from '../enums/LeadStatus.enum';
 import { Exists } from 'src/common/validators/id-exists.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsPhoneNumberEGorSA } from 'src/common/validators/is-phone.validator';
+import { IsInternationalPhoneNumber} from 'src/common/validators/is-phone.validator';
 
 export class CreateLeadDto {
   @ApiProperty({
@@ -27,13 +27,12 @@ export class CreateLeadDto {
 
   @ApiProperty({
     example: '+201234567890',
-    description: 'Egyptian or Saudi phone number',
-    pattern: '^(\\+20|\\+966)',
+
   })
   @IsString()
   @IsNotEmpty()
-  @IsPhoneNumberEGorSA({
-    message: 'Phone number must be valid Egyptian or Saudi number',
+  @IsInternationalPhoneNumber({
+    message: 'Invalid phone number',
   })
   phone: string;
 

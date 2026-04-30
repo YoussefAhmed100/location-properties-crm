@@ -5,7 +5,8 @@ import {
   IsOptional,
   IsNotEmpty,
 } from 'class-validator';
-import { IsPhoneNumberEGorSA } from 'src/common/validators/is-phone.validator';
+import { IsInternationalPhoneNumber } from 'src/common/validators/is-phone.validator';
+
 
 export class CreateClientDto {
   @ApiProperty({
@@ -22,8 +23,8 @@ export class CreateClientDto {
   })
   @IsString()
   @IsNotEmpty()
-  @IsPhoneNumberEGorSA({
-    message: 'Phone number must be valid Egyptian or Saudi number',
+   @IsInternationalPhoneNumber({
+    message: 'Invalid phone number',
   })
   phone: string;
   
