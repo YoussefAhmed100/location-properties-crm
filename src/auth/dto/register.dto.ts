@@ -6,7 +6,7 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
-import { IsPhoneNumberEGorSA } from 'src/common/validators/is-phone.validator';
+import { IsInternationalPhoneNumber} from 'src/common/validators/is-phone.validator';
 
 export class RegisterDto {
   @ApiProperty({
@@ -45,12 +45,12 @@ export class RegisterDto {
 
   @ApiProperty({
     example: '+201001234567',
-    description: 'Egyptian or Saudi phone number',
+    
   })
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumberEGorSA({
-    message: 'Phone number must be valid Egyptian or Saudi number',
+  @IsInternationalPhoneNumber({
+    message: 'Invalid phone number',
   })
   phone: string;
 }

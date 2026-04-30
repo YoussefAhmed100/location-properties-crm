@@ -9,7 +9,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { UserRole } from 'src/users/enums/roles.enum';
-import { IsPhoneNumberEGorSA } from 'src/common/validators/is-phone.validator';
+import { IsInternationalPhoneNumber } from 'src/common/validators/is-phone.validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -53,12 +53,11 @@ export class CreateUserDto {
 
   @ApiProperty({
     example: '+201001234567',
-    description: 'Egyptian or Saudi phone number',
   })
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumberEGorSA({
-    message: 'Phone number must be valid Egyptian or Saudi number',
+  @IsInternationalPhoneNumber({
+    message: 'Invalid phone number',
   })
   phone: string;
 
