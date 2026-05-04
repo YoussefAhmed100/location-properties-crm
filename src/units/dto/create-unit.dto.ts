@@ -175,6 +175,9 @@ export class CreateUnitDto {
   @IsOptional()
   @IsString()
   group: string;
+  @IsOptional()
+  @IsString()
+  phase: string;
 
   // ================= VILLA =================
 

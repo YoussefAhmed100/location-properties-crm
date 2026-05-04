@@ -7,13 +7,13 @@ export type ClientDocument = HydratedDocument<Client>;
 
 @Schema({ timestamps: true })
 export class Client {
-  @Prop({ required: true, trim: true ,index: true})
+  @Prop({ required: true, trim: true })
   fullName: string;
 
   @Prop({ required: true, trim: true })
   phone: string;
 
-  @Prop({ unique: true, lowercase: true, trim: true })
+  @Prop({ unique: true,sparse: true, lowercase: true, trim: true })
   email: string;
 
   @Prop({ trim: true })
