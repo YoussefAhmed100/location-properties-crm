@@ -6,7 +6,6 @@ import {
   Delete,
   Body,
   Query,
- 
   UseInterceptors,
   UploadedFiles,
   Patch,
@@ -17,7 +16,7 @@ import {
   ApiParam,
   ApiBearerAuth,
   ApiTags,
-  ApiCreatedResponse
+  ApiCreatedResponse,
 } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
@@ -40,44 +39,51 @@ import { Public } from 'src/common/decorators/public.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'create new user' })
+  @ApiCreatedResponse({ description: 'User created successfully' })
+  @Post('create')
+  @UseInterceptors(FilesInterceptor('images', 10))
+  create(
+    @Body() dto: CreateUserDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.usersService.create(dto, files);
+  }
 
-    @ApiOperation({ summary: 'create new user' })
-    @ApiCreatedResponse({ description: 'User created successfully' })
-    @Public()
-    @Post('create')
-    @UseInterceptors(FilesInterceptor('images',10))
-    create(@Body() dto:CreateUserDto,@UploadedFiles() files: Express.Multer.File[]) {
-      return this.usersService.create(dto, files);
-    }
-
-
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiOkResponse({ description: 'List of users' })
+  @Public()
   @Get()
-  async findAll(@Query() query: buildQueryDto){
+  async findAll(@Query() query: buildQueryDto) {
     return this.usersService.findAll(query);
   }
-   @ApiOperation({ summary: 'Change user password' })
+  @ApiOperation({ summary: 'Change user password' })
   @ApiOkResponse({ description: 'Password changed  successfully' })
- @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
-@Patch('change-password')
-async changePassword(@CurrentUser('_id') userId: string, @Body() dto: ChangePasswordDto) {
-  return this.usersService.changePassword(userId, dto);
-}
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
+  @Patch('change-password')
+  async changePassword(
+    @CurrentUser('_id') userId: string,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return this.usersService.changePassword(userId, dto);
+  }
 
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ type: UserResponseDto })
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
+ @Public()
   @Get(':id')
-  async findOne(@Param('id', ParseObjectIdPipe) id: string): Promise<UserResponseDto> {
+  async findOne(
+    @Param('id', ParseObjectIdPipe) id: string,
+  ): Promise<UserResponseDto> {
     return this.usersService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Update user' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ type: UserResponseDto })
-  
   @UseInterceptors(FilesInterceptor('images', 2))
+   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.SALES)
   @Patch(':id')
   async update(
     @Param('id', ParseObjectIdPipe) id: string,
@@ -95,15 +101,12 @@ async changePassword(@CurrentUser('_id') userId: string, @Body() dto: ChangePass
     return this.usersService.toggleUserActive(id);
   }
 
- 
   @ApiOperation({ summary: 'Delete user permanently' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiOkResponse({ description: 'User deleted successfully' })
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  
   @Delete(':id/delete')
-  async hardDelete(@Param('id',ParseObjectIdPipe) id: string) {
+  async hardDelete(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.hardDelete(id);
-
   }
- 
 }

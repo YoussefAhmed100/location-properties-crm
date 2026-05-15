@@ -5,6 +5,7 @@ import { UploadService } from 'src/common/storage/upload.service';
 import { Project, ProjectSchema } from 'src/projects/schema/project.schema';
 import { Unit, UnitSchema } from './schema/unit.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { WebsiteUnitsService } from './website-units.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [UnitsController],
-  providers: [UnitsService,UploadService],
+  providers: [UnitsService,UploadService,WebsiteUnitsService],
 })
 export class UnitsModule {}

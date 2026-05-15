@@ -113,8 +113,12 @@ export class Unit {
   @Prop({ type: Number, min: 0 })
   requestedAmount: number;
 
-  @Prop()
+  @Prop({ type: String })
   notes: string;
+  @Prop({ type: String })
+  phase: string;
+  @Prop({ type: Boolean ,default: false ,index: true})
+  showInWebsite: boolean;
 }
 
 export const UnitSchema = SchemaFactory.createForClass(Unit);
