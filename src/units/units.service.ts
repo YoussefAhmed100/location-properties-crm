@@ -88,7 +88,7 @@ export class UnitsService {
       .findById(id)
       .populate('project', 'name -_id')
       .populate('area', 'name  location -_id')
-      .populate('client', 'fullName email phone-_id');
+      .populate('client', 'fullName email phone-_id').lean();
     if (!unit) {
       throw new NotFoundException('Unit not found');
     }
@@ -152,4 +152,30 @@ export class UnitsService {
     await this.cacheManager.del(`unit:${id}`);
     return 'Unit deleted successfully';
   }
+
+
+async toggleShowInWebsite(unitId: string) {
+  const unit = await this.unitModel.findOneAndUpdate(
+    { _id: unitId },
+    [
+      {
+        $set: {
+          showInWebsite: { $not: "$showInWebsite" },
+        },
+      },
+    ],
+    {
+      returnDocument: 'after',
+      updatePipeline: true, 
+    },
+  );
+
+  if (!unit) {
+    throw new NotFoundException('Unit not found');
+  }
+    await this.cacheManager.del(`unit:${unitId}`);
+
+  return unit;
+}
+
 }

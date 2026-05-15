@@ -117,6 +117,8 @@ export class Unit {
   notes: string;
   @Prop({ type: String })
   phase: string;
+  @Prop({ type: Boolean ,default: false ,index: true})
+  showInWebsite: boolean;
 }
 
 export const UnitSchema = SchemaFactory.createForClass(Unit);
