@@ -8,6 +8,7 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from 'src/users/enums/roles.enum';
+import { Public } from 'src/common/decorators/public.decorator';
 @ApiTags('Areas')
 @ApiBearerAuth()
 
@@ -24,14 +25,18 @@ export class AreasController {
     return this.areasService.create(createAreaDto);
   }
 
-  @Get()
+ 
   @ApiOperation({ summary: 'Get all areas with filtering and pagination' })
+  @Public()
+   @Get()
   findAll(@Query() query: buildQueryDto) {
     return this.areasService.findAll(query);
   }
 
-  @Get(':id')
+  
   @ApiOperation({ summary: 'Get area by id' })
+   @Public()
+   @Get(':id')
   findOne(
     @Param('id', ParseObjectIdPipe) id: string,
   ) {

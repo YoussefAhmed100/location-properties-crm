@@ -171,6 +171,9 @@ export class buildQueryDto {
   @IsOptional()
   @IsNumberString()
   'price[lte]'?: string;
+   @IsOptional()
+  @IsNumberString()
+  price?: string;
 
   @IsOptional()
   @IsNumberString()
@@ -179,6 +182,9 @@ export class buildQueryDto {
   @IsOptional()
   @IsNumberString()
   'size[lte]'?: string;
+  @IsOptional()
+  @IsNumberString()
+  size?: string;
 
   
   @IsOptional()
