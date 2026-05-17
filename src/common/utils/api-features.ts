@@ -15,31 +15,68 @@ export class ApiFeatures<T> implements IQueryBuilder<T> {
     this.mongooseQuery = mongooseQuery;
     this.queryString = queryString;
   }
+
 filter(): this {
-  const queryObj: any = { ...this.queryString };
+  const excluded = ['page', 'sort', 'limit', 'fields', 'keyword'];
 
-  const excludedFields = ['page', 'sort', 'limit', 'fields', 'keyword'];
-  excludedFields.forEach((field) => delete queryObj[field]);
+  const queryObj = Object.keys(this.queryString)
+    .filter((key) => !excluded.includes(key))
+    .reduce((acc, key) => {
+      const value = this.queryString[key];
 
-  // ✅ convert comma-separated values → $in
+      // 🚨 ignore empty / object / undefined
+      if (
+        value === undefined ||
+        value === null ||
+        value === '' ||
+        typeof value === 'object'
+      ) {
+        return acc;
+      }
+
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, any>);
+
+  const mongoFilter: any = {};
+
   Object.keys(queryObj).forEach((key) => {
-    if (typeof queryObj[key] === 'string' && queryObj[key].includes(',')) {
-      queryObj[key] = {
-        $in: queryObj[key]
+    const match = key.match(/^(.+)\[(gte|gt|lte|lt|in)\]$/);
+
+    // ================= OPERATORS =================
+    if (match) {
+      const field = match[1];
+      const operator = `$${match[2]}`;
+      const rawValue = queryObj[key];
+
+      if (!mongoFilter[field]) mongoFilter[field] = {};
+
+      // -------- numeric operators --------
+      if (['gte', 'gt', 'lte', 'lt'].includes(match[2])) {
+        const num = Number(rawValue);
+
+        if (!isNaN(num)) {
+          mongoFilter[field][operator] = num;
+        }
+        return;
+      }
+
+      // -------- IN operator --------
+      if (match[2] === 'in' && typeof rawValue === 'string') {
+        mongoFilter[field][operator] = rawValue
           .split(',')
-          .map((val: string) => val.trim()),
-      };
+          .map((v: string) => v.trim())
+          .filter(Boolean);
+      }
+
+      return;
     }
+
+    // ================= NORMAL FILTER =================
+    mongoFilter[key] = queryObj[key];
   });
 
-  let queryStr = JSON.stringify(queryObj);
-
-  queryStr = queryStr.replace(
-    /\b(gte|gt|lt|lte)\b/g,
-    (match) => `$${match}`,
-  );
-
-  this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
+  this.mongooseQuery = this.mongooseQuery.find(mongoFilter);
 
   return this;
 }
