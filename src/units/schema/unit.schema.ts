@@ -11,6 +11,9 @@ export class Unit {
   @Prop({ type: Types.ObjectId, ref: 'Project', required: true, index: true })
   project: Types.ObjectId;
 
+  @Prop({ type: String, trim: true })
+  title: string;
+
   @Prop({ required: true, trim: true, unique: true, index: true })
   unitCode: string;
 
@@ -43,7 +46,7 @@ export class Unit {
   @Prop({ min: 0 })
   floor: number;
 
-  @Prop({ trim: true })
+  @Prop({ type: String, trim: true })
   location: string;
 
   @Prop({ min: 0 })
@@ -67,8 +70,6 @@ export class Unit {
   @Prop({
     type: Types.ObjectId,
     ref: 'Client',
-   
-   
   })
   client: Types.ObjectId;
 
@@ -79,7 +80,7 @@ export class Unit {
   @Prop({
     type: String,
   })
- createdBy: string;
+  createdBy: string;
 
   @Prop({ required: true, min: 0 })
   size: number;
@@ -102,7 +103,7 @@ export class Unit {
   villaNumber: number;
   @Prop({ type: Number, min: 0 })
   paidAmount: number;
-   @Prop({ type: Number, min: 0 })
+  @Prop({ type: Number, min: 0 })
   remainingAmount: number;
 
   @Prop({ type: String })
@@ -117,7 +118,7 @@ export class Unit {
   notes: string;
   @Prop({ type: String })
   phase: string;
-  @Prop({ type: Boolean ,default: false ,index: true})
+  @Prop({ type: Boolean, default: false, index: true })
   showInWebsite: boolean;
 }
 

@@ -26,7 +26,15 @@ export class CreateUnitDto {
   @IsNotEmpty()
   @Exists('Project')
   project: string;
-
+  
+ @ApiProperty({
+    example: 'unit title ',
+    maxLength: 20,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  title: string;
   @ApiProperty({
     example: 'A-101',
     maxLength: 20,
