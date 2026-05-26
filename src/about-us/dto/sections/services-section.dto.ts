@@ -19,7 +19,7 @@ export class ServicesSectionDto {
 
   @ApiProperty({ example: '24/7 Support' })
   @IsString()
-  instantConsultation: string;
+  support: string;
 
   @ApiProperty({ example: 'Tailored for you' })
   @IsString()

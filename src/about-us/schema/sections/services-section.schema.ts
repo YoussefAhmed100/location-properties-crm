@@ -11,7 +11,7 @@ export class ServicesSection {
   certifiedExperts: number;
 
   @Prop({ required: true })
-  instantConsultation: string;
+  support: string;
 
   @Prop({ required: true })
   personalService: string;
