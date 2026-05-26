@@ -203,7 +203,6 @@ async getTopSalesAgents() {
   async getRecentActivity() {
   const limit = 5;
 
-  // جلب البيانات الأخيرة
   const [deals, leads, units] = await Promise.all([
     this.dealModel
       .find({}, 'status unit salesAgent createdAt')
@@ -227,7 +226,6 @@ async getTopSalesAgents() {
       .lean(),
   ]);
 
-  // تحويل كل نوع إلى activity واحد
   const activities = [
     ...deals.map((deal: any) => ({
       type: 'deal',
@@ -251,7 +249,6 @@ async getTopSalesAgents() {
     })),
   ];
 
-  // ترتيب حسب التاريخ والحد الأقصى
   return activities
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, limit);

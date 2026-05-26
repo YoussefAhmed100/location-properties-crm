@@ -2,6 +2,7 @@ export class UnitMapper {
   static toPublic(unit: any) {
     return {
       id: unit._id,
+      title: unit.title,
 
       type: unit.type,
       purpose: unit.purpose,
