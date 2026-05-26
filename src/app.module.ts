@@ -20,6 +20,7 @@ import { TreasuryModule } from './treasury/treasury.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { AboutUsModule } from './about-us/about-us.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
     EventModule,
     DashboardModule,
     TreasuryModule,
+    AboutUsModule,
   ],
 
   providers: [
