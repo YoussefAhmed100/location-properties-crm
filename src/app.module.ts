@@ -21,6 +21,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { AboutUsModule } from './about-us/about-us.module';
+import { HomeModule } from './home/home.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { AboutUsModule } from './about-us/about-us.module';
     DashboardModule,
     TreasuryModule,
     AboutUsModule,
+    HomeModule,
   ],
 
   providers: [

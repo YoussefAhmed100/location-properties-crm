@@ -18,4 +18,7 @@ export class ExpertiseSection {
 
   @Prop({ required: true, type: Number })
   marketReports: number;
+
+  @Prop({ required: true, type: Number })
+  closedDeals: number;
 }

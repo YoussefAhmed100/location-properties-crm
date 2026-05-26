@@ -32,4 +32,9 @@ export class ExpertiseSectionDto {
   @IsInt()
   @Min(0)
   marketReports: number;
+  @ApiProperty({ example: 1000 })
+  @IsNotEmpty()
+  @IsInt()
+  @Min(0)
+  closedDeals: number;
 }
