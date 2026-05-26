@@ -53,7 +53,7 @@ export class AboutUsService {
       {},
       updateAboutDto,
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true,
       },
     );
