@@ -42,36 +42,27 @@ export class AboutUsService {
     return about;
   }
 
-  async update(updateAboutDto: UpdateAboutDto) {
-    const exists = await this.aboutModel.exists({});
+  async update(
+    id: string,
+    updateAboutDto: UpdateAboutDto
+  ) {
 
-    if (!exists) {
-      throw new NotFoundException('About page not found');
-    }
 
-    const updatedAbout = await this.aboutModel.findOneAndUpdate(
-      {},
+    const updatedAbout = await this.aboutModel.findByIdAndUpdate(
+      id,
       updateAboutDto,
       {
         returnDocument: 'after',
         runValidators: true,
       },
     );
+    if (!updatedAbout) {
+      throw new NotFoundException('About page not found');  
+      }
+
 
     return updatedAbout;
   }
 
-  async remove() {
-    const exists = await this.aboutModel.exists({});
 
-    if (!exists) {
-      throw new NotFoundException('About page not found');
-    }
-
-    await this.aboutModel.deleteOne({});
-
-    return {
-      message: 'About page deleted successfully',
-    };
-  }
 }
