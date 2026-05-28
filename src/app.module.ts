@@ -23,6 +23,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { AboutUsModule } from './about-us/about-us.module';
 import { HomeModule } from './home/home.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
+import { FooterModule } from './footer/footer.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { ContactUsModule } from './contact-us/contact-us.module';
     AboutUsModule,
     HomeModule,
     ContactUsModule,
+    FooterModule,
   ],
 
   providers: [
