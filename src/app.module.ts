@@ -22,6 +22,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { AboutUsModule } from './about-us/about-us.module';
 import { HomeModule } from './home/home.module';
+import { ContactUsModule } from './contact-us/contact-us.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { HomeModule } from './home/home.module';
     TreasuryModule,
     AboutUsModule,
     HomeModule,
+    ContactUsModule,
   ],
 
   providers: [

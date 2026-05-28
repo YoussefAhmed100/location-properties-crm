@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { AboutUsService } from './about-us.service';
 
@@ -31,20 +31,16 @@ export class AboutUsController {
     return this.aboutService.findOne();
   }
 
-  @Patch()
+  @Patch(':id')
   @ApiOperation({ summary: 'Update About Us page' })
   @ApiResponse({ status: 200, description: 'Updated successfully' })
   update(
+    @Param('id') id: string,
     @Body()
     updateAboutDto: UpdateAboutDto,
   ) {
-    return this.aboutService.update(updateAboutDto);
+    return this.aboutService.update(id, updateAboutDto);
   }
 
-  @Delete()
-  @ApiOperation({ summary: 'Delete About Us page' })
-  @ApiResponse({ status: 200, description: 'Deleted successfully' })
-  remove() {
-    return this.aboutService.remove();
-  }
+
 }
